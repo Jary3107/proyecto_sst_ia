@@ -69,9 +69,10 @@ class PdfService {
       // Prioridad 1: Foto anotada en Base64
       if (h.fotoAnotadaBase64 != null && h.fotoAnotadaBase64!.isNotEmpty) {
         try {
-          final clean = h.fotoAnotadaBase64!.contains(',')
-              ? h.fotoAnotadaBase64!.split(',').last
-              : h.fotoAnotadaBase64!;
+          final clean = (h.fotoAnotadaBase64!.contains(',')
+                  ? h.fotoAnotadaBase64!.split(',').last
+                  : h.fotoAnotadaBase64!)
+              .replaceAll(RegExp(r'\s+'), '');
           fotosCargadas[key] = base64Decode(clean);
           continue;
         } catch (_) {}

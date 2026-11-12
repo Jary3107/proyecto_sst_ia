@@ -17,15 +17,25 @@ class Evidencia {
   })  : fecha = fecha ?? DateTime.now(),
         hallazgos = hallazgos ?? [];
 
-  Map<String, dynamic> toMap() => {
-        'foto_path': fotoPath,
-        'observacion': observacion,
-        'ubicacion': ubicacion,
-        'tipo': tipo,
-        'adicional': adicional,
-        'fecha': fecha.toIso8601String(),
-        'hallazgos': hallazgos.map((h) => h.toMap()).toList(),
-      };
+  Map<String, dynamic> toMap() {
+    String? b64;
+    for (final h in hallazgos) {
+      if (h.fotoAnotadaBase64 != null && h.fotoAnotadaBase64!.isNotEmpty) {
+        b64 = h.fotoAnotadaBase64;
+        break;
+      }
+    }
+    return {
+      'foto_path': fotoPath,
+      'foto_base64': b64,
+      'observacion': observacion,
+      'ubicacion': ubicacion,
+      'tipo': tipo,
+      'adicional': adicional,
+      'fecha': fecha.toIso8601String(),
+      'hallazgos': hallazgos.map((h) => h.toMap()).toList(),
+    };
+  }
 
   factory Evidencia.fromMap(Map<String, dynamic> map) {
     final e = Evidencia(

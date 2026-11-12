@@ -103,7 +103,8 @@ class Foto extends StatelessWidget {
   Widget build(BuildContext context) {
     if (base64Str != null && base64Str!.isNotEmpty) {
       try {
-        final clean = base64Str!.contains(',') ? base64Str!.split(',').last : base64Str!;
+        final clean = (base64Str!.contains(',') ? base64Str!.split(',').last : base64Str!)
+            .replaceAll(RegExp(r'\s+'), '');
         final bytes = base64Decode(clean);
         return ClipRRect(
           borderRadius: BorderRadius.circular(10),
