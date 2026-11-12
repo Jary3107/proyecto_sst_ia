@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../models/evidencia.dart';
 import '../models/hallazgo.dart';
 import '../utils/catalogo_normas.dart';
+import '../utils/constants.dart';
 import 'analisis_service.dart';
 import 'analisis_simulado_service.dart';
 
