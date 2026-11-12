@@ -1,21 +1,17 @@
 """
 Servicio generador de Informes Técnicos Periciales de Inspección SST en PDF con ReportLab.
-Estructurado rigurosamente según el marco legal y normas técnicas colombianas:
-- NTC 1461: Colores y señales de seguridad (código de colores, formas y porcentajes de área).
-- NTC-ISO 3864-1:2011 y NTC-ISO 3864-3:2012: Principios de diseño para señales de seguridad.
-- NTC-ISO 7010:2021: Símbolos gráficos registrados.
-- Resolución 2400 de 1979 (Estatuto de Seguridad Industrial: pasillos libres >= 40cm, demarcación amarilla 10cm, barandas 60cm a 45°).
-- NSR-10: Título J (Protección contra incendios, NTC 2885 / NTC 1669) y Título K (Medios y señalización de evacuación).
-- Decreto 1072 de 2015: Art. 2.2.4.6.25 (Plan de Prevención, Preparación y Respuesta ante Emergencias).
-- ISO 16069: Sistemas de señalización fotoluminiscente de evacuación (señales altas, intermedias y a nivel de zócalo).
-- Catálogos técnicos oficiales (CCS y Covadonga): Fórmula S >= d² / 2000, distancias vs. tamaños y fotoluminiscencia Clase A/B.
-- Estándar de citación y registro fotográfico APA 7ma Edición.
+Estructurado rigurosamente según los requerimientos periciales colombianos y APA 7ma Edición:
+1. Encabezado institucional y metadatos de auditoría.
+2. Matriz de Hallazgos y Evaluación de Conformidad Normativa SST.
+3. Registro Fotográfico Pericial de Evidencias (cada foto real exactamente una vez con su ficha técnica).
+4. Dictamen pericial y firmas formales de responsabilidad.
 """
 import io
 import os
 from pathlib import Path
 from typing import Dict, Any, List
 from datetime import datetime
+from PIL import Image as PILImage
 
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
@@ -26,6 +22,7 @@ from reportlab.platypus import (
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 
+from app.config import UPLOADS_DIR, BASE_DIR
 from app.models.catalogo_sst import CATEGORIAS_SST, CATALOGO_SENALES
 
 
@@ -83,8 +80,8 @@ class PDFService:
             'TituloSST',
             parent=self.styles['Heading1'],
             fontName='Helvetica-Bold',
-            fontSize=15,
-            leading=19,
+            fontSize=13,
+            leading=17,
             textColor=colors.HexColor('#0f172a'),
             alignment=0,
             spaceAfter=4
@@ -93,29 +90,19 @@ class PDFService:
             'SubtituloMetaSST',
             parent=self.styles['Normal'],
             fontName='Helvetica',
-            fontSize=8.5,
-            leading=12,
+            fontSize=8,
+            leading=11.5,
             textColor=colors.HexColor('#334155'),
-            spaceAfter=8
+            spaceAfter=6
         )
         self.estilo_seccion_num = ParagraphStyle(
             'SeccionNumSST',
             parent=self.styles['Heading2'],
             fontName='Helvetica-Bold',
-            fontSize=11,
-            leading=14,
+            fontSize=10.5,
+            leading=13.5,
             textColor=colors.HexColor('#1e3a8a'),
-            spaceBefore=10,
-            spaceAfter=5
-        )
-        self.estilo_subseccion_num = ParagraphStyle(
-            'SubSeccionNumSST',
-            parent=self.styles['Heading3'],
-            fontName='Helvetica-Bold',
-            fontSize=9.5,
-            leading=13,
-            textColor=colors.HexColor('#0f2942'),
-            spaceBefore=6,
+            spaceBefore=8,
             spaceAfter=4
         )
         self.estilo_parrafo = ParagraphStyle(
@@ -123,42 +110,33 @@ class PDFService:
             parent=self.styles['Normal'],
             fontName='Helvetica',
             fontSize=8,
-            leading=11.5,
-            textColor=colors.HexColor('#1e293b'),
-            alignment=4, # Justificado
-            spaceAfter=5
-        )
-        self.estilo_norma_item = ParagraphStyle(
-            'NormaItemSST',
-            parent=self.styles['Normal'],
-            fontName='Helvetica',
-            fontSize=7.8,
             leading=11,
             textColor=colors.HexColor('#1e293b'),
-            spaceAfter=3.5
+            alignment=4,
+            spaceAfter=4
         )
         self.estilo_celda = ParagraphStyle(
             'CeldaSST',
             parent=self.styles['Normal'],
             fontName='Helvetica',
-            fontSize=7.2,
-            leading=9.5,
+            fontSize=7,
+            leading=9,
             textColor=colors.HexColor('#1e293b')
         )
         self.estilo_celda_bold = ParagraphStyle(
             'CeldaBoldSST',
             parent=self.styles['Normal'],
             fontName='Helvetica-Bold',
-            fontSize=7.2,
-            leading=9.5,
+            fontSize=7,
+            leading=9,
             textColor=colors.HexColor('#0f172a')
         )
         self.estilo_celda_center = ParagraphStyle(
             'CeldaCenterSST',
             parent=self.styles['Normal'],
             fontName='Helvetica',
-            fontSize=7.2,
-            leading=9.5,
+            fontSize=7,
+            leading=9,
             alignment=1,
             textColor=colors.HexColor('#1e293b')
         )
@@ -166,44 +144,123 @@ class PDFService:
             'CeldaThSST',
             parent=self.styles['Normal'],
             fontName='Helvetica-Bold',
-            fontSize=7.5,
-            leading=10,
+            fontSize=7.2,
+            leading=9.5,
             textColor=colors.HexColor('#ffffff'),
-            alignment=1 # Centrado
+            alignment=1
         )
-
-        # Estilos estándar APA 7ma Edición para figuras
         self.estilo_apa_figura = ParagraphStyle(
             'ApaFiguraSST',
             parent=self.styles['Normal'],
             fontName='Helvetica-Bold',
-            fontSize=8.5,
-            leading=11,
+            fontSize=8,
+            leading=10.5,
             textColor=colors.HexColor('#0f172a'),
-            spaceAfter=2
+            spaceAfter=1
         )
         self.estilo_apa_titulo = ParagraphStyle(
             'ApaTituloSST',
             parent=self.styles['Normal'],
             fontName='Helvetica-Oblique',
-            fontSize=8,
-            leading=10.5,
-            textColor=colors.HexColor('#334155'),
+            fontSize=7.5,
+            leading=9.5,
+            textColor=colors.HexColor('#1e3a8a'),
             spaceAfter=4
         )
         self.estilo_apa_nota = ParagraphStyle(
             'ApaNotaSST',
             parent=self.styles['Normal'],
             fontName='Helvetica',
-            fontSize=7.2,
-            leading=9.8,
+            fontSize=6.8,
+            leading=8.8,
             textColor=colors.HexColor('#475569'),
-            spaceBefore=3,
-            spaceAfter=10
+            spaceBefore=2,
+            spaceAfter=6
+        )
+        self.estilo_ficha_label = ParagraphStyle(
+            'FichaLabelSST',
+            parent=self.styles['Normal'],
+            fontName='Helvetica-Bold',
+            fontSize=6.8,
+            leading=8.8,
+            textColor=colors.HexColor('#1e3a8a')
+        )
+        self.estilo_ficha_val = ParagraphStyle(
+            'FichaValSST',
+            parent=self.styles['Normal'],
+            fontName='Helvetica',
+            fontSize=6.8,
+            leading=8.8,
+            textColor=colors.HexColor('#0f172a')
         )
 
+    def _resolver_ruta_foto(self, foto_path: str, foto_url: str = "") -> str:
+        """Resuelve la ruta absoluta válida de la fotografía en el sistema local."""
+        # 1. Verificar si la ruta directa existe
+        if foto_path and os.path.exists(foto_path):
+            return foto_path
+        
+        # 2. Buscar por nombre de archivo en UPLOADS_DIR
+        if foto_path:
+            nombre = Path(foto_path).name
+            candidato = UPLOADS_DIR / nombre
+            if candidato.exists():
+                return str(candidato)
+                
+        # 3. Buscar por foto_url
+        if foto_url:
+            nombre_url = Path(foto_url).name
+            candidato_url = UPLOADS_DIR / nombre_url
+            if candidato_url.exists():
+                return str(candidato_url)
+
+        return ""
+
+    def _crear_flowable_imagen(self, ruta_img: str, max_w: float = 210, max_h: float = 145):
+        """Crea un objeto Image de ReportLab escalado proporcionalmente manteniendo el aspecto."""
+        if not ruta_img or not os.path.exists(ruta_img):
+            return Table(
+                [[Paragraph("<i>[Fotografía capturada y archivada digitalmente]</i>", self.estilo_celda_center)]],
+                colWidths=[max_w],
+                style=[
+                    ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f1f5f9')),
+                    ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#cbd5e1')),
+                    ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+                    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                    ('TOPPADDING', (0,0), (-1,-1), 35),
+                    ('BOTTOMPADDING', (0,0), (-1,-1), 35),
+                ]
+            )
+
+        try:
+            with PILImage.open(ruta_img) as im:
+                orig_w, orig_h = im.size
+                if orig_w <= 0 or orig_h <= 0:
+                    raise ValueError("Dimensiones inválidas")
+                ratio = min(max_w / orig_w, max_h / orig_h)
+                dest_w = orig_w * ratio
+                dest_h = orig_h * ratio
+                
+                rl_img = RLImage(ruta_img, width=dest_w, height=dest_h)
+                return Table([[rl_img]], colWidths=[max_w], style=[
+                    ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+                    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                    ('LEFTPADDING', (0,0), (-1,-1), 0),
+                    ('RIGHTPADDING', (0,0), (-1,-1), 0),
+                    ('TOPPADDING', (0,0), (-1,-1), 0),
+                    ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+                ])
+        except Exception:
+            return Paragraph("<i>[Error al procesar formato de imagen]</i>", self.estilo_celda_center)
+
     def generar_pdf_inspeccion(self, inspeccion: Dict[str, Any]) -> bytes:
-        """Genera el informe formal en formato PDF de acuerdo con los requerimientos colombianos y APA 7."""
+        """
+        Genera el informe técnico pericial enfocado en:
+        1. Encabezado y datos de inspección.
+        2. Matriz de hallazgos y evaluación de riesgos.
+        3. Registro fotográfico pericial (cada foto real una sola vez).
+        4. Dictamen pericial y firmas.
+        """
         buffer = io.BytesIO()
         doc = SimpleDocTemplate(
             buffer,
@@ -216,12 +273,11 @@ class PDFService:
         
         story = []
         
-        # -----------------------------------------------------------------
-        # TÍTULO INSTITUCIONAL Y METADATOS
-        # -----------------------------------------------------------------
+        # =================================================================
+        # ENCABEZADO INSTITUCIONAL Y METADATOS
+        # =================================================================
         story.append(Paragraph(
-            "Informe Pericial de Inspección Técnica de Seguridad y Salud en el Trabajo (SST): "
-            "Evaluación de Condiciones Locativas, Sistemas de Emergencia, Señalización y Demarcación",
+            "Informe Técnico Pericial de Inspección SST: Registro Fotográfico y Matriz de Hallazgos",
             self.estilo_titulo
         ))
         
@@ -235,328 +291,114 @@ class PDFService:
         else:
             institucion_txt = sede
 
-        fecha_txt = inspeccion.get("fecha", "14 de octubre de 2026")
+        fecha_txt = inspeccion.get("fecha", datetime.now().strftime("%Y-%m-%d %H:%M"))
         numero_insp = inspeccion.get("numero", "#0001")
-        area_txt = inspeccion.get("area", "Pasillos de Laboratorios y Aulas Múltiples")
+        area_txt = inspeccion.get("area", "Área de Laboratorios y Pasillos")
+        edificio_txt = inspeccion.get("edificio", "Campus Principal")
+
+        evidencias = inspeccion.get("evidencias", [])
+        total_evidencias = len(evidencias)
+        
+        # Contabilizar hallazgos
+        total_hallazgos = 0
+        conformes = 0
+        no_conformes = 0
+        pendientes = 0
+        
+        for ev in evidencias:
+            for h in ev.get("hallazgos", []):
+                total_hallazgos += 1
+                cond = (h.get("condicion") or "").lower()
+                st = (h.get("estado") or "").lower()
+                if "conforme" in cond and "no" not in cond:
+                    conformes += 1
+                elif "no conforme" in cond or "critico" in cond or "subestandar" in cond:
+                    no_conformes += 1
+                else:
+                    pendientes += 1
 
         meta_parrafo = (
-            f"<b>Preparado por:</b> {responsable} &nbsp;|&nbsp; <b>Rol:</b> Especialista / Auditor SST<br/>"
-            f"<b>Institución:</b> {institucion_txt} &nbsp;|&nbsp; <b>Área Auditada:</b> {area_txt}<br/>"
-            f"<b>Fecha de Recorrido:</b> {fecha_txt} &nbsp;|&nbsp; <b>Expediente Correlativo:</b> {numero_insp} &nbsp;|&nbsp; <b>Vigencia:</b> 2026-2027"
+            f"<b>Institución:</b> {institucion_txt} &nbsp;|&nbsp; <b>Edificio:</b> {edificio_txt} &nbsp;|&nbsp; <b>Área:</b> {area_txt}<br/>"
+            f"<b>Expediente Correlativo:</b> <b>{numero_insp}</b> &nbsp;|&nbsp; <b>Fecha de Recorrido:</b> {fecha_txt} &nbsp;|&nbsp; <b>Auditor Líder SST:</b> {responsable}<br/>"
+            f"<b>Balance Pericial:</b> {total_evidencias} Evidencias Registradas &nbsp;|&nbsp; "
+            f"{total_hallazgos} Hallazgos Evaluados ({conformes} Conformes, {no_conformes} No conformes, {pendientes} En verificación)"
         )
         story.append(Paragraph(meta_parrafo, self.estilo_subtitulo_meta))
-        story.append(HRFlowable(width="100%", thickness=2, color=colors.HexColor("#1e3a8a"), spaceAfter=8))
+        story.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor("#1e3a8a"), spaceAfter=8))
 
-        # -----------------------------------------------------------------
-        # 1. INTRODUCCIÓN Y ALCANCE
-        # -----------------------------------------------------------------
-        story.append(Paragraph("1. Introducción y Alcance del Recorrido Técnico", self.estilo_seccion_num))
-        intro_texto = (
-            "El presente informe documenta los resultados de la auditoría física y verificación técnica de Seguridad y Salud "
-            "en el Trabajo (SST) llevada a cabo en las instalaciones del campus institucional. El propósito fundamental radicó en "
-            "evaluar el grado de conformidad con las disposiciones legales colombianas vigentes en materia de prevención, preparación "
-            "y respuesta ante emergencias (Decreto 1072 de 2015), protección contra incendios (NSR-10 Título J), medios de evacuación "
-            "(NSR-10 Título K), y el estricto cumplimiento de los estándares cromáticos, dimensionales y de visibilidad de la señalización "
-            "de seguridad (NTC 1461, NTC-ISO 3864, ISO 16069 y Resolución 2400 de 1979). El dictamen tiene validez para fines de gestión "
-            "del riesgo, planes de mejora ante ARL y auditorías del Ministerio de Trabajo."
-        )
-        story.append(Paragraph(intro_texto, self.estilo_parrafo))
-        story.append(Spacer(1, 3))
-
-        # -----------------------------------------------------------------
-        # 2. MARCO LEGAL Y NORMAS TÉCNICAS OBLIGATORIAS
-        # -----------------------------------------------------------------
-        story.append(Paragraph("2. Marco Legal y Normas Técnicas Obligatorias de Referencia", self.estilo_seccion_num))
+        # =================================================================
+        # SECCIÓN 1: MATRIZ DE EVALUACIÓN DE HALLAZGOS Y RIESGOS SST
+        # =================================================================
+        story.append(Paragraph("1. Matriz de Hallazgos y Evaluación de Conformidad SST", self.estilo_seccion_num))
         story.append(Paragraph(
-            "La inspección técnica se fundamenta en las regulaciones jurídicas y técnicas de obligatorio cumplimiento en Colombia "
-            "para edificaciones de uso educativo y público, recopiladas en la carpeta oficial de normas técnicas:",
+            "La siguiente matriz consolida los hallazgos técnicos registrados durante la inspección pericial en sitio, "
+            "evaluados bajo el marco legal y normas técnicas aplicables (NTC 1461, Res. 2400/79, NSR-10 Títulos J/K y Dec. 1072/15):",
             self.estilo_parrafo
         ))
 
-        normas = [
-            ("NTC 1461 (ICONTEC) / NTC-ISO 3864-1:2011 / NTC-ISO 3864-3:2012:",
-             "Establece los principios de diseño para señales de seguridad y demarcaciones: colores de seguridad (rojo, amarillo, azul, verde), "
-             "colores de contraste (blanco y negro), formas geométricas estandarizadas y porcentajes mínimos de recubrimiento de color."),
-            ("NTC-ISO 7010:2021:",
-             "Símbolos gráficos normalizados a nivel internacional y nacional para señales de seguridad registradas (prohibición, advertencia, obligación y salvamento)."),
-            ("Resolución 2400 de 1979 (Ministerio de Trabajo - Estatuto de Seguridad Industrial):",
-             "<b>Art. 17:</b> Pisos limpios, sin humedad ni riesgos de resbalón.<br/>"
-             "<b>Art. 164:</b> Dotación obligatoria de camillas y botiquines en puestos de primeros auxilios.<br/>"
-             "<b>Art. 182:</b> Prohibición expresa de alimentos en laboratorios y áreas de riesgo.<br/>"
-             "<b>Art. 202:</b> Señalización y código de colores en áreas industriales y de servicios.<br/>"
-             "<b>Art. 281:</b> Ancho libre no menor de 40 cm entre máquinas, equipos o muros y pasillos, con demarcación continua de 10 cm en amarillo."),
-            ("NSR-10 (Reglamento Colombiano de Construcción Sismo Resistente - Ley 400 de 1997):",
-             "• <b>Título J (Extinción de Incendios):</b> Dotación obligatoria de extintores portátiles según carga de fuego (NTC 2885 / NFPA 10), "
-             "distancia máxima de recorrido (15m a 23m), altura de montaje (máx. 1.50m) y red contra incendios con gabinetes equipados (NTC 1669 / NFPA 14).<br/>"
-             "• <b>Título K (Medios de Evacuación):</b> Dimensionamiento de pasillos, salidas de emergencia con apertura hacia afuera, barras antipánico y señalética continua."),
-            ("ISO 16069 (Sistemas de Señalización de Rutas de Evacuación - SWGS):",
-             "Disposición de señales fotoluminiscentes en tres niveles de altura: nivel alto (> 2.00m), intermedio (1.60m - 1.80m) y bajo/zócalo (10cm - 40cm del piso) para escape bajo humo."),
-            ("Decreto 1072 de 2015 (Decreto Único Reglamentario del Sector Trabajo):",
-             "Art. 2.2.4.6.25: Obligación del empleador de estructurar y dotar el Plan de Prevención, Preparación y Respuesta ante Emergencias con recursos técnicos certificados."),
-            ("Ley 1335 de 2009 (Ley Antitabaco):",
-             "Arts. 19-20: Garantía de espacios 100% libres de humo de tabaco en instituciones educativas y fijación de avisos restrictivos obligatorios en todos los accesos.")
-        ]
-
-        for titulo_norma, desc_norma in normas:
-            p_norma = Paragraph(f"• <b>{titulo_norma}</b> {desc_norma}", self.estilo_norma_item)
-            story.append(p_norma)
-
-        story.append(Spacer(1, 4))
-
-        # -----------------------------------------------------------------
-        # 3. GUÍA METROLÓGICA Y CROMÁTICA DE SEÑALIZACIÓN Y DEMARCACIÓN
-        # -----------------------------------------------------------------
-        story.append(Paragraph("3. Guía Metrológica y Cromática de Señalización y Demarcación", self.estilo_seccion_num))
-        story.append(Paragraph(
-            "Conforme a la NTC 1461, NTC-ISO 3864 y los manuales técnicos del Consejo Colombiano de Seguridad (CCS) y Covadonga, "
-            "la señalización debe cumplir parámetros cromáticos y dimensionales exactos para garantizar su rápida legibilidad:",
-            self.estilo_parrafo
-        ))
-
-        # Tabla 3.1: Matriz Cromática y Geométrica
-        tabla_cromat_datos = [
-            [
-                Paragraph("<b>Color de Seguridad</b>", self.estilo_celda_th),
-                Paragraph("<b>Color de Contraste</b>", self.estilo_celda_th),
-                Paragraph("<b>Forma Geométrica</b>", self.estilo_celda_th),
-                Paragraph("<b>% Mínimo Color</b>", self.estilo_celda_th),
-                Paragraph("<b>Significado Técnico y Ejemplos de Aplicación</b>", self.estilo_celda_th)
-            ],
-            [
-                Paragraph("<font color='#dc2626'><b>ROJO</b></font>", self.estilo_celda_bold),
-                Paragraph("Blanco", self.estilo_celda),
-                Paragraph("Círculo con barra diagonal descendente a 45°", self.estilo_celda),
-                Paragraph(">= 35%", self.estilo_celda_center),
-                Paragraph("<b>Prohibición:</b> Prohibido fumar (Ley 1335/09), no celular, no pase, parada de emergencia.", self.estilo_celda)
-            ],
-            [
-                Paragraph("<font color='#dc2626'><b>ROJO</b></font>", self.estilo_celda_bold),
-                Paragraph("Blanco", self.estilo_celda),
-                Paragraph("Cuadrado o Rectángulo", self.estilo_celda),
-                Paragraph(">= 50%", self.estilo_celda_center),
-                Paragraph("<b>Equipos de Lucha Contra Incendios:</b> Extintores, gabinetes, pulsador de alarma (NSR-10 J).", self.estilo_celda)
-            ],
-            [
-                Paragraph("<font color='#d97706'><b>AMARILLO</b></font>", self.estilo_celda_bold),
-                Paragraph("Negro", self.estilo_celda),
-                Paragraph("Triángulo equilátero", self.estilo_celda),
-                Paragraph(">= 50%", self.estilo_celda_center),
-                Paragraph("<b>Advertencia y Precaución:</b> Peligro eléctrico, piso resbaloso, caídas, sustancias químicas.", self.estilo_celda)
-            ],
-            [
-                Paragraph("<font color='#d97706'><b>AMARILLO / NEGRO</b></font>", self.estilo_celda_bold),
-                Paragraph("Contraste alterno", self.estilo_celda),
-                Paragraph("Franjas diagonales a 45° de ancho similar", self.estilo_celda),
-                Paragraph("50% / 50%", self.estilo_celda_center),
-                Paragraph("<b>Riesgo Permanente:</b> Desniveles, vigas bajas, obstáculos salientes, bordes de escaleras.", self.estilo_celda)
-            ],
-            [
-                Paragraph("<font color='#2563eb'><b>AZUL</b></font>", self.estilo_celda_bold),
-                Paragraph("Blanco", self.estilo_celda),
-                Paragraph("Círculo pleno", self.estilo_celda),
-                Paragraph(">= 50%", self.estilo_celda_center),
-                Paragraph("<b>Acción de Mando / Obligación:</b> Uso obligatorio de casco, gafas, calzado y protección auditiva.", self.estilo_celda)
-            ],
-            [
-                Paragraph("<font color='#059669'><b>VERDE</b></font>", self.estilo_celda_bold),
-                Paragraph("Blanco", self.estilo_celda),
-                Paragraph("Cuadrado o Rectángulo", self.estilo_celda),
-                Paragraph(">= 50%", self.estilo_celda_center),
-                Paragraph("<b>Salvamento y Evacuación:</b> Salida de socorro, camilla, botiquín, punto de encuentro, lavaojos.", self.estilo_celda)
-            ]
-        ]
-
-        t_cromat = Table(tabla_cromat_datos, colWidths=[70, 55, 115, 60, 240])
-        t_cromat.setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#0f2444')),
-            ('ALIGN', (0,0), (-1,0), 'CENTER'),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#94a3b8')),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#cbd5e1')),
-            ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor('#ffffff'), colors.HexColor('#f8fafc')]),
-            ('TOPPADDING', (0,0), (-1,-1), 3),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 3),
-            ('LEFTPADDING', (0,0), (-1,-1), 4),
-            ('RIGHTPADDING', (0,0), (-1,-1), 4),
-        ]))
-        story.append(t_cromat)
-        story.append(Spacer(1, 6))
-
-        # Tabla 3.2: Distancias de Observación y Dimensiones Técnicas (S >= d² / 2000)
-        story.append(Paragraph("<b>Tabla de Distancias de Visualización y Dimensionamiento Reglamentario (Fórmula S &ge; d² / 2000):</b>", self.estilo_parrafo))
-        tabla_dim_datos = [
-            [
-                Paragraph("<b>Distancia de Visión (d)</b>", self.estilo_celda_th),
-                Paragraph("<b>Superficie Mínima (S)</b>", self.estilo_celda_th),
-                Paragraph("<b>Dimensión Cuadrada</b>", self.estilo_celda_th),
-                Paragraph("<b>Dimensión Rectangular</b>", self.estilo_celda_th),
-                Paragraph("<b>Diámetro Circular (d/40)</b>", self.estilo_celda_th),
-                Paragraph("<b>Ubicación Típica Recomendada</b>", self.estilo_celda_th)
-            ],
-            [
-                Paragraph("Hasta 5 metros", self.estilo_celda_bold),
-                Paragraph("&ge; 0.0125 m²", self.estilo_celda_center),
-                Paragraph("10 x 10 cm", self.estilo_celda_center),
-                Paragraph("12 x 7 cm / 15 x 10 cm", self.estilo_celda_center),
-                Paragraph("&Oslash; 12.5 cm", self.estilo_celda_center),
-                Paragraph("Oficinas pequeñas, tableros eléctricos individuales.", self.estilo_celda)
-            ],
-            [
-                Paragraph("Hasta 10 metros", self.estilo_celda_bold),
-                Paragraph("&ge; 0.0500 m²", self.estilo_celda_center),
-                Paragraph("20 x 20 cm / 21x21 cm", self.estilo_celda_center),
-                Paragraph("30 x 15 cm / 30 x 20 cm", self.estilo_celda_center),
-                Paragraph("&Oslash; 20.0 cm", self.estilo_celda_center),
-                Paragraph("Pasillos estándar de aulas, laboratorios, extintores.", self.estilo_celda)
-            ],
-            [
-                Paragraph("Hasta 15 metros", self.estilo_celda_bold),
-                Paragraph("&ge; 0.1125 m²", self.estilo_celda_center),
-                Paragraph("30 x 30 cm", self.estilo_celda_center),
-                Paragraph("40 x 20 cm / 45 x 20 cm", self.estilo_celda_center),
-                Paragraph("&Oslash; 30.0 cm", self.estilo_celda_center),
-                Paragraph("Corredores principales, accesos a bloques, gabinetes.", self.estilo_celda)
-            ],
-            [
-                Paragraph("Hasta 20 metros", self.estilo_celda_bold),
-                Paragraph("&ge; 0.2000 m²", self.estilo_celda_center),
-                Paragraph("42 x 42 cm (DIN A3)", self.estilo_celda_center),
-                Paragraph("60 x 20 cm / 60 x 30 cm", self.estilo_celda_center),
-                Paragraph("&Oslash; 40.0 cm", self.estilo_celda_center),
-                Paragraph("Auditorios, cafeterías, vías de evacuación amplias.", self.estilo_celda)
-            ],
-            [
-                Paragraph("Hasta 30 metros", self.estilo_celda_bold),
-                Paragraph("&ge; 0.4500 m²", self.estilo_celda_center),
-                Paragraph("60 x 60 cm (DIN A2)", self.estilo_celda_center),
-                Paragraph("80 x 40 cm / 90 x 45 cm", self.estilo_celda_center),
-                Paragraph("&Oslash; 60.0 cm", self.estilo_celda_center),
-                Paragraph("Patios exteriores, zonas comunes abiertas, parqueaderos.", self.estilo_celda)
-            ]
-        ]
-
-        t_dim = Table(tabla_dim_datos, colWidths=[80, 75, 75, 85, 80, 145])
-        t_dim.setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#1e3a8a')),
-            ('ALIGN', (0,0), (-1,0), 'CENTER'),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#94a3b8')),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#cbd5e1')),
-            ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor('#ffffff'), colors.HexColor('#f8fafc')]),
-            ('TOPPADDING', (0,0), (-1,-1), 3),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 3),
-            ('LEFTPADDING', (0,0), (-1,-1), 4),
-            ('RIGHTPADDING', (0,0), (-1,-1), 4),
-        ]))
-        story.append(t_dim)
-        story.append(Spacer(1, 5))
-
-        # Parámetros de Instalación, Cotas y Demarcación
-        texto_cotas = (
-            "<b>Cotas Reglamentarias de Montaje y Demarcación (Res. 2400/79 e ISO 16069):</b><br/>"
-            "• <b>Altura en pared estándar:</b> Entre 1.60m y 1.80m medidos desde el piso terminado (NPT) hasta el centro de la señal.<br/>"
-            "• <b>Señales tipo bandera o suspendidas:</b> Altura libre mínima &ge; 2.00m a 2.20m para evitar obstrucción al paso y asegurar visibilidad sobre cabezas.<br/>"
-            "• <b>Nivel de zócalo (ISO 16069):</b> Instalación entre 10 cm y 40 cm del suelo en corredores de evacuación para visibilidad en presencia de humo denso.<br/>"
-            "• <b>Extintores portátiles (NTC 2885 / NSR-10):</b> Altura máxima de la manija a 1.50m (equipos &le; 18 kg) o 1.10m (equipos > 18 kg). "
-            "Despeje frontal libre de 1.0 metro demarcado en piso con cuadro de 1.0m x 1.0m con franjas diagonales a 45° amarillo/negro de 10 cm.<br/>"
-            "• <b>Vías de circulación peatonal:</b> Franjas amarillas continuas de 10 cm de ancho en piso, manteniendo pasillos libres de mínimo 40 cm entre máquinas o muros (Res. 2400/79 Art. 281).<br/>"
-            "• <b>Calidad fotoluminiscente (Catálogo CCS / Covadonga):</b> Clase A (&ge; 210 mcd/m² a 10 min y 3.000 min de atenuación) obligatoria para edificios públicos con carga lumínica mínima de 15 minutos."
-        )
-        story.append(Paragraph(texto_cotas, self.estilo_norma_item))
-        story.append(Spacer(1, 6))
-
-        # -----------------------------------------------------------------
-        # 4. MATRIZ DE HALLAZGOS Y EVALUACIÓN DE CONFORMIDAD NORMATIVA
-        # -----------------------------------------------------------------
-        story.append(Paragraph("4. Matriz de Hallazgos, Evaluación de Conformidad y Parámetros Técnicos", self.estilo_seccion_num))
-        story.append(Paragraph(
-            "A continuación, se detalla la matriz pericial de condiciones subestándar identificadas en el recorrido, fundamentadas "
-            "en el incumplimiento de las normas técnicas y especificando los colores, tamaños mínimos y alturas requeridas:",
-            self.estilo_parrafo
-        ))
-
-        # Tabla técnica completa de la matriz normativa
-        matriz_base = [
-            ("Extintores Portátiles",
-             "Ausencia total de extintores en pasillos de laboratorios y aulas múltiples del bloque.",
-             "NSR-10 (Título J, J.4) y NTC 2885 / NFPA 10. Omisión de dotación básica por carga combustible.",
-             "Rojo (&ge; 50%) y contraste blanco. Formato 20x20cm (d&le;10m) o 30x30cm (d&le;15m) fotoluminiscente Clase A. Altura máx. manija: 1.50m. Cuadro de despeje en piso 1.0x1.0m.",
-             "Alto", "#ef4444",
-             "Instalar extintores multipropósito ABC de 10 lbs y CO2 a 1.50m. Fijar señal fotoluminiscente a 1.80m y demarcar piso."),
-            ("Gabinetes Contra Incendio",
-             "Inexistencia de red contra incendios y gabinetes en bloques principales de la institución.",
-             "NSR-10 (Título J, J.4.2) y NTC 1669 / NFPA 14. Ausencia de sistemas hídricos de supresión.",
-             "Rojo (&ge; 50%) y pictograma blanco. Formato 30x30cm o 40x40cm fotoluminiscente. Válvula a 1.20m. Despeje libre frontal de 1.0m de radio sin muebles.",
-             "Alto", "#ef4444",
-             "Diseñar red contra incendios con gabinetes tipo II/III conectados a reserva exclusiva de agua con radio libre de 1.0m."),
-            ("Estación de Camilla y Botiquín",
-             "No se evidencian camillas rígidas de inmovilización ni botiquín dotado en pasillos.",
-             "Decreto 1072 de 2015 (Art. 2.2.4.6.25) y Res. 2400/1979 (Art. 164). Carencia de recursos de primeros auxilios.",
-             "Verde (&ge; 50%) y cruz blanca. Formato 30x20cm o 30x40cm. Soporte vertical para camilla espinal entre 0.30m y 1.90m. Señal superior a 1.80m.",
-             "Alto", "#ef4444",
-             "Dotar cada bloque con camilla espinal rígida de polietileno, correas araña, inmovilizador cervical y botiquín dotado."),
-            ("Rutas de Evacuación",
-             "Falta de señalización direccional fotoluminiscente continua hacia las salidas.",
-             "NSR-10 (Título K, K.3.8), NTC 1461 e ISO 16069. Vías de escape no identificables en humo o apagón.",
-             "Verde (&ge; 50%) y contraste blanco. Formato 30x15cm (d&le;10m) o 40x20cm (d&le;15m) Clase A (210 mcd/m²). Montaje a 1.70m y zócalo a 30cm del piso.",
-             "Alto", "#ef4444",
-             "Instalar señales fotoluminiscentes Clase A cada 15m a 1.70m y a nivel de zócalo (30cm) según ISO 16069 y NSR-10 K."),
-            ("Punto de Encuentro",
-             "Área de reunión exterior no delimitada ni identificada con señalética reglamentaria.",
-             "Decreto 1072 de 2015 (Planes de Emergencia) y NTC 1461. Falta de zona segura post-evacuación.",
-             "Verde (&ge; 50%) y contraste blanco. Formato 60x60cm o 80x80cm montada en poste metálico exterior a altura &ge; 2.20m. Círculo en piso 2.0x2.0m.",
-             "Alto", "#ef4444",
-             "Fijar poste con letrero metálico reflectivo de 60x60cm a 2.30m en patio exterior y pintar delimitación en piso con pintura de tráfico."),
-            ("Piso Resbaloso / Humedad",
-             "Ausencia de caballetes móviles de advertencia durante rutinas de aseo en pasillos.",
-             "Res. 2400/1979 (Arts. 17 y 202) y NTC 1461 / OSHA 1910.22. Exposición a caídas al mismo nivel.",
-             "Amarillo (&ge; 50%) y contraste negro. Caballete plegable tipo tijera de 60cm de altura con texto bilingüe y pictograma visible a 10m en pasillo.",
-             "Medio", "#f59e0b",
-             "Dotar al personal de servicios generales con caballetes tipo tijera de 60cm y exigir su despliegue obligatorio antes del trapeado."),
-            ("Prohibición de Fumar",
-             "Falta de señalización restrictiva de fumar en accesos y áreas cerradas del campus.",
-             "Ley 1335 de 2009 (Arts. 19-20), Res. 2400/1979 y NTC 1461. Falta de control administrativo legal.",
-             "Rojo (&ge; 35%) con banda a 45° y contraste blanco. Diámetro 20cm o formato 20x30cm con leyenda legal obligatoria a altura 1.60m - 1.70m.",
-             "Medio", "#f59e0b",
-             "Instalar letreros circulares de 20cm con la leyenda 'Espacio 100% Libre de Humo de Tabaco - Ley 1335 de 2009' en todas las puertas."),
-            ("Prohibición de Alimentos",
-             "Ausencia de señal restrictiva de comida en laboratorios de cómputo y equipos.",
-             "Res. 2400/1979 (Art. 182) y bioseguridad. Riesgo de daño a equipos y contaminación cruzada.",
-             "Rojo (&ge; 35%) con banda a 45° y contraste blanco/negro. Formato circular de 20cm o 20x30cm a 1.60m en puerta de laboratorio.",
-             "Bajo", "#3b82f6",
-             "Fijar señalización circular de prohibido comer/beber de 20cm en el pórtico de cada laboratorio y sala de informática."),
-            ("Uso de Celular en Escaleras",
-             "No hay advertencia sobre el uso de dispositivos móviles en tramos de escaleras.",
-             "Decreto 1072 de 2015 (Control de actos inseguros) y Res. 2400/1979. Factor de caída y distracción.",
-             "Rojo (&ge; 35%) con banda diagonal a 45°. Formato 20x20cm o 20x30cm con texto preventivo a 1.60m en descansos de escaleras.",
-             "Bajo", "#3b82f6",
-             "Colocar avisos de prohibido celular en descansos de escaleras promoviendo el uso del pasamanos continuo.")
-        ]
-
-        # Encabezado de la tabla de matriz
+        # Ancho total = 540 pt
         tabla_filas = [
             [
-                Paragraph("<b>Ítem / Elemento</b>", self.estilo_celda_th),
-                Paragraph("<b>Condición Observada</b>", self.estilo_celda_th),
-                Paragraph("<b>Norma Incumplida</b>", self.estilo_celda_th),
-                Paragraph("<b>Especificación Técnica Exigida (Colores, Tamaño S&ge;d²/2000 y Altura)</b>", self.estilo_celda_th),
+                Paragraph("<b>#</b>", self.estilo_celda_th),
+                Paragraph("<b>Elemento / Señal SST</b>", self.estilo_celda_th),
+                Paragraph("<b>Ubicación</b>", self.estilo_celda_th),
+                Paragraph("<b>Condición</b>", self.estilo_celda_th),
+                Paragraph("<b>Norma Aplicable</b>", self.estilo_celda_th),
                 Paragraph("<b>Nivel Riesgo</b>", self.estilo_celda_th),
-                Paragraph("<b>Acción Correctiva y Adquisición</b>", self.estilo_celda_th),
+                Paragraph("<b>Acción / Recomendación</b>", self.estilo_celda_th),
             ]
         ]
 
-        # Llenar la matriz
-        for item, cond, norm, exig, nivel, color_hex, accion in matriz_base:
-            p_item = Paragraph(f"<b>{item}</b>", self.estilo_celda_bold)
-            p_cond = Paragraph(cond, self.estilo_celda)
-            p_norm = Paragraph(norm, self.estilo_celda)
-            p_exig = Paragraph(exig, self.estilo_celda)
-            p_nivel = Paragraph(f"<font color='{color_hex}'><b>{nivel.upper()}</b></font>", self.estilo_celda_bold)
-            p_accion = Paragraph(accion, self.estilo_celda)
-            tabla_filas.append([p_item, p_cond, p_norm, p_exig, p_nivel, p_accion])
+        contador_item = 1
+        for ev in evidencias:
+            ubic = ev.get("ubicacion") or area_txt or "Área inspeccionada"
+            obs = ev.get("observacion") or ""
+            
+            for h in ev.get("hallazgos", []):
+                elem = h.get("elemento") or "Elemento de Seguridad y Salud"
+                cond = h.get("condicion") or "Requiere verificación"
+                norma = h.get("norma") or "NTC 1461 / NSR-10 / Res. 2400/79"
+                rec = h.get("recomendacion") or obs or "Verificar y mantener conforme al estándar normativo."
+                
+                # Determinar color de condición y nivel de riesgo
+                cond_lower = cond.lower()
+                if "no conforme" in cond_lower or "riesgo" in cond_lower or "critico" in cond_lower:
+                    color_cond = "#dc2626"
+                    nivel_txt = "ALTO"
+                    color_nivel = "#dc2626"
+                elif "conforme" in cond_lower:
+                    color_cond = "#16a34a"
+                    nivel_txt = "BAJO"
+                    color_nivel = "#16a34a"
+                else:
+                    color_cond = "#d97706"
+                    nivel_txt = "MEDIO"
+                    color_nivel = "#d97706"
 
-        # Dimensiones de columnas (Total = 540 pt)
-        t_matriz = Table(tabla_filas, colWidths=[70, 95, 95, 125, 45, 110])
+                p_num = Paragraph(f"<b>{contador_item:02d}</b>", self.estilo_celda_center)
+                p_elem = Paragraph(f"<b>{elem}</b>", self.estilo_celda_bold)
+                p_ubic = Paragraph(ubic, self.estilo_celda)
+                p_cond = Paragraph(f"<font color='{color_cond}'><b>{cond}</b></font>", self.estilo_celda)
+                p_norma = Paragraph(norma, self.estilo_celda)
+                p_nivel = Paragraph(f"<font color='{color_nivel}'><b>{nivel_txt}</b></font>", self.estilo_celda_center)
+                p_rec = Paragraph(rec, self.estilo_celda)
+
+                tabla_filas.append([p_num, p_elem, p_ubic, p_cond, p_norma, p_nivel, p_rec])
+                contador_item += 1
+
+        if len(tabla_filas) == 1:
+            # Si no hay hallazgos detallados, agregar fila informativa
+            tabla_filas.append([
+                Paragraph("-", self.estilo_celda_center),
+                Paragraph("Sin hallazgos registrados", self.estilo_celda_bold),
+                Paragraph(area_txt, self.estilo_celda),
+                Paragraph("<font color='#16a34a'><b>Conforme</b></font>", self.estilo_celda),
+                Paragraph("NTC 1461 / Res. 2400", self.estilo_celda),
+                Paragraph("<font color='#16a34a'><b>BAJO</b></font>", self.estilo_celda_center),
+                Paragraph("Recorrido inicial sin anomalías críticas detectadas.", self.estilo_celda)
+            ])
+
+        t_matriz = Table(tabla_filas, colWidths=[24, 110, 80, 76, 85, 45, 120])
         t_matriz.setStyle(TableStyle([
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#0f2444')),
             ('ALIGN', (0,0), (-1,0), 'CENTER'),
@@ -564,219 +406,145 @@ class PDFService:
             ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#94a3b8')),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#cbd5e1')),
             ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor('#ffffff'), colors.HexColor('#f8fafc')]),
-            ('TOPPADDING', (0,0), (-1,-1), 3),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+            ('TOPPADDING', (0,0), (-1,-1), 2.5),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
             ('LEFTPADDING', (0,0), (-1,-1), 3),
             ('RIGHTPADDING', (0,0), (-1,-1), 3),
         ]))
         story.append(t_matriz)
-        story.append(Spacer(1, 8))
+        story.append(Spacer(1, 10))
 
-        # -----------------------------------------------------------------
-        # 5. EVIDENCIAS Y REGISTRO FOTOGRÁFICO (ESTÁNDAR APA 7ma EDICIÓN)
-        # -----------------------------------------------------------------
-        story.append(Paragraph("5. Evidencias y Registro Fotográfico Pericial (Estándar APA 7ma Edición)", self.estilo_seccion_num))
+        # =================================================================
+        # SECCIÓN 2: REGISTRO FOTOGRÁFICO PERICIAL (CADA FOTO UNA SOLA VEZ)
+        # =================================================================
+        story.append(Paragraph("2. Registro Fotográfico Pericial de Evidencias (Estándar APA 7ma Edición)", self.estilo_seccion_num))
         story.append(Paragraph(
-            "<i>(Nota metodológica: Las evidencias fotográficas se estructuran bajo el estándar editorial APA 7ma edición, "
-            "identificando para cada figura el incumplimiento de señalización, cromatismo, dimensionamiento y cotas de altura).</i>",
+            "A continuación, se documenta el soporte fotográfico pericial capturado durante el recorrido. "
+            "Cada figura representa una evidencia física individual debidamente rotulada con su dictamen técnico normativo:",
             self.estilo_parrafo
         ))
 
-        # Figuras estándar oficiales enriquecidas con análisis técnico
-        figuras_apa = [
-            {
-                "num": 1,
-                "titulo": "Ausencia de extintor portatil y gabinete de red contra incendio en pasillo",
-                "nota": "Nota. Se evidencia infracción directa de la NSR-10 Título J y NTC 2885. Los muros carecen de extintores a altura reglamentaria (máx. 1.50m) y señalización roja fotoluminiscente de 20x20cm (d<=10m). Asimismo, no existe red contra incendios ni gabinetes hídricos (NTC 1669).",
-                "match_words": ["extintor", "gabinete", "incendio"]
-            },
-            {
-                "num": 2,
-                "titulo": "Carencia de camilla rigida de inmovilizacion y estacion de primeros auxilios",
-                "nota": "Nota. Se constata omisión del Decreto 1072 de 2015 (Art. 2.2.4.6.25) y Res. 2400/1979 (Art. 164). El bloque carece de camilla espinal rígida de polietileno con correas tipo araña y letrero verde de salvamento de 30x20cm (&ge; 50% verde) para estabilización de politraumatismos.",
-                "match_words": ["camilla", "primeros auxilios", "inmovilizacion", "botiquin"]
-            },
-            {
-                "num": 3,
-                "titulo": "Falta de señalizacion direccional fotoluminiscente de rutas de evacuacion y punto de encuentro",
-                "nota": "Nota. Incumplimiento de la NTC 1461, NSR-10 Título K e ISO 16069. No existen flechas verdes fotoluminiscentes Clase A (210 mcd/m²) a 1.70m ni a nivel de zócalo (30cm del piso) para escape bajo humo denso, ni poste exterior de 60x60cm para el punto de encuentro.",
-                "match_words": ["evacuacion", "salida", "punto de encuentro", "ruta"]
-            },
-            {
-                "num": 4,
-                "titulo": "Condicion de riesgo locativo por falta de caballete de advertencia de piso resbaloso",
-                "nota": "Nota. Vulneración de la Resolución 2400 de 1979 (Art. 17) y NTC 1461. Falta de caballetes tipo tijera amarillos (&ge; 50% amarillo) de 60cm de altura durante rutinas de aseo, dejando al personal expuesto a caídas al mismo nivel.",
-                "match_words": ["piso", "resbaloso", "humedo", "caida", "caballete"]
-            },
-            {
-                "num": 5,
-                "titulo": "Ausencia de señalizacion restrictiva de no fumar, no celulares y prohibicion de alimentos",
-                "nota": "Nota. Incumplimiento de la Ley 1335 de 2009 (Art. 19-20), Res. 2400/1979 (Art. 182) y NTC 1461. Falta de letreros circulares rojos (cobertura &ge; 35% y banda a 45°) de diámetro 20cm en los accesos a aulas, escaleras y laboratorios de cómputo.",
-                "match_words": ["fumar", "celular", "comer", "prohibid"]
-            }
-        ]
-
-        evidencias_existentes = inspeccion.get("evidencias", [])
-
-        # Emparejar evidencias fotográficas reales tomadas en la inspección con las figuras APA
-        for fig in figuras_apa:
-            num_fig = fig["num"]
-            titulo_fig = fig["titulo"]
-            nota_fig = fig["nota"]
-            
-            foto_encontrada = None
-            for ev in evidencias_existentes:
-                texto_ev = f"{ev.get('observacion', '')} {ev.get('ubicacion', '')} {ev.get('tipo_esperado', '')}".lower()
-                for h in ev.get("hallazgos", []):
-                    texto_ev += f" {h.get('elemento', '')} {h.get('categoria', '')}".lower()
+        if total_evidencias == 0:
+            story.append(Paragraph(
+                "<i>No se han adjuntado evidencias fotográficas para este expediente de inspección.</i>",
+                self.estilo_celda
+            ))
+        else:
+            for idx, ev in enumerate(evidencias, 1):
+                ruta_foto = self._resolver_ruta_foto(ev.get("foto_path", ""), ev.get("foto_url", ""))
+                ubicacion_ev = ev.get("ubicacion") or area_txt or "Área inspeccionada"
+                observacion_ev = ev.get("observacion") or "Sin observaciones adicionales registradas por el auditor."
+                fecha_ev = ev.get("fecha") or fecha_txt
                 
-                if any(w in texto_ev for w in fig["match_words"]):
-                    path_cand = ev.get("foto_path", "")
-                    if path_cand and os.path.exists(path_cand):
-                        foto_encontrada = path_cand
-                        break
+                # Datos del hallazgo asociado
+                hallazgos_ev = ev.get("hallazgos", [])
+                if hallazgos_ev:
+                    h = hallazgos_ev[0]
+                    elemento_ev = h.get("elemento") or "Señal / Elemento SST"
+                    condicion_ev = h.get("condicion") or "Evaluado"
+                    categoria_ev = h.get("categoria") or "General"
+                    norma_ev = h.get("norma") or "NTC 1461 / NSR-10 / Res. 2400"
+                    recomendacion_ev = h.get("recomendacion") or "Cumplir parámetros reglamentarios."
+                    color_seg = h.get("color_seguridad") or "Reglamentario"
+                    forma_geom = h.get("forma_geometrica") or "Normalizada NTC 1461"
+                    altura_mont = h.get("altura_montaje") or "1.60m - 1.80m al centro de la señal"
+                else:
+                    elemento_ev = ev.get("tipo_esperado") or "Evidencia Fotográfica"
+                    condicion_ev = "En evaluación"
+                    categoria_ev = "General"
+                    norma_ev = "NTC 1461 / Res. 2400 de 1979"
+                    recomendacion_ev = observacion_ev
+                    color_seg = "Reglamentario"
+                    forma_geom = "Normalizada"
+                    altura_mont = "Cotas estándar NTC 1461"
 
-            if not foto_encontrada and len(evidencias_existentes) >= num_fig:
-                cand = evidencias_existentes[num_fig - 1].get("foto_path", "")
-                if cand and os.path.exists(cand):
-                    foto_encontrada = cand
+                # Flowable de la foto
+                flowable_img = self._crear_flowable_imagen(ruta_foto, max_w=200, max_h=140)
 
-            bloque_figura = []
-            bloque_figura.append(Paragraph(f"<b>Figura {num_fig}</b>", self.estilo_apa_figura))
-            bloque_figura.append(Paragraph(f"<i>{titulo_fig}</i>", self.estilo_apa_titulo))
+                # Ficha descriptiva a la derecha
+                cond_color = "#16a34a" if "conforme" in condicion_ev.lower() and "no" not in condicion_ev.lower() else "#dc2626"
+                
+                tabla_ficha_datos = [
+                    [Paragraph("<b>Ítem / Elemento:</b>", self.estilo_ficha_label), Paragraph(f"<b>{elemento_ev}</b>", self.estilo_ficha_val)],
+                    [Paragraph("<b>Ubicación:</b>", self.estilo_ficha_label), Paragraph(ubicacion_ev, self.estilo_ficha_val)],
+                    [Paragraph("<b>Condición:</b>", self.estilo_ficha_label), Paragraph(f"<font color='{cond_color}'><b>{condicion_ev}</b></font> ({categoria_ev})", self.estilo_ficha_val)],
+                    [Paragraph("<b>Observación:</b>", self.estilo_ficha_label), Paragraph(observacion_ev, self.estilo_ficha_val)],
+                    [Paragraph("<b>Norma Técnica:</b>", self.estilo_ficha_label), Paragraph(norma_ev, self.estilo_ficha_val)],
+                    [Paragraph("<b>Cromática y Cotas:</b>", self.estilo_ficha_label), Paragraph(f"{color_seg} · {forma_geom} · {altura_mont}", self.estilo_ficha_val)],
+                    [Paragraph("<b>Recomendación:</b>", self.estilo_ficha_label), Paragraph(recomendacion_ev, self.estilo_ficha_val)],
+                ]
+                
+                t_ficha = Table(tabla_ficha_datos, colWidths=[80, 240])
+                t_ficha.setStyle(TableStyle([
+                    ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                    ('TOPPADDING', (0,0), (-1,-1), 1),
+                    ('BOTTOMPADDING', (0,0), (-1,-1), 1),
+                    ('LEFTPADDING', (0,0), (-1,-1), 2),
+                    ('RIGHTPADDING', (0,0), (-1,-1), 2),
+                ]))
 
-            if foto_encontrada:
-                try:
-                    rl_img = RLImage(foto_encontrada, width=3.8 * inch, height=2.3 * inch)
-                    t_img = Table([[rl_img]], colWidths=[540], style=[
-                        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-                        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-                        ('LEFTPADDING', (0,0), (-1,-1), 0),
-                        ('RIGHTPADDING', (0,0), (-1,-1), 0),
-                        ('BOTTOMPADDING', (0,0), (-1,-1), 2),
-                    ])
-                    bloque_figura.append(t_img)
-                except Exception:
-                    p_ph = Paragraph("<i>[Fotografía capturada y archivada en el expediente digital de auditoría]</i>", self.estilo_celda)
-                    bloque_figura.append(p_ph)
-            else:
-                p_box = Table(
-                    [[Paragraph(
-                        f"<b>[Registro Fotográfico Pericial - Figura {num_fig}]</b><br/>"
-                        f"<font size=7 color='#475569'>Evidencia física documentada durante el recorrido de auditoría en campus: {titulo_fig}.</font><br/>"
-                        f"<font size=6.5 color='#64748b'>Falta de conformidad con especificaciones de color, tamaño (S &ge; d²/2000) y cotas de altura según NTC 1461 y NSR-10.</font>",
-                        self.estilo_celda_center
-                    )]],
-                    colWidths=[540],
+                # Tarjeta contenedora de dos columnas (Foto izquierda 210 pt | Ficha derecha 330 pt) = 540 pt
+                t_tarjeta = Table(
+                    [[flowable_img, t_ficha]],
+                    colWidths=[205, 335],
                     style=[
-                        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f8fafc')),
-                        ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#cbd5e1')),
-                        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+                        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#ffffff')),
+                        ('BOX', (0,0), (-1,-1), 0.8, colors.HexColor('#cbd5e1')),
+                        ('ALIGN', (0,0), (0,0), 'CENTER'),
                         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-                        ('TOPPADDING', (0,0), (-1,-1), 12),
-                        ('BOTTOMPADDING', (0,0), (-1,-1), 12),
+                        ('TOPPADDING', (0,0), (-1,-1), 4),
+                        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                        ('LEFTPADDING', (0,0), (-1,-1), 4),
+                        ('RIGHTPADDING', (0,0), (-1,-1), 4),
                     ]
                 )
-                bloque_figura.append(p_box)
 
-            bloque_figura.append(Paragraph(nota_fig, self.estilo_apa_nota))
-            story.append(KeepTogether(bloque_figura))
+                bloque_evidencia = []
+                bloque_evidencia.append(Paragraph(f"<b>Figura {idx}</b>", self.estilo_apa_figura))
+                bloque_evidencia.append(Paragraph(f"<i>Registro pericial de {elemento_ev} en {ubicacion_ev}</i>", self.estilo_apa_titulo))
+                bloque_evidencia.append(t_tarjeta)
+                bloque_evidencia.append(Paragraph(
+                    f"<i>Nota.</i> Fotografía capturada durante la auditoría el {fecha_ev}. Dictamen: {condicion_ev}. Conforme a {norma_ev}.",
+                    self.estilo_apa_nota
+                ))
+                bloque_evidencia.append(Spacer(1, 5))
+                
+                story.append(KeepTogether(bloque_evidencia))
 
-        # -----------------------------------------------------------------
-        # 6. PLAN DE ACCIÓN PRIORIZADO Y CRONOGRAMA DE CORRECCIÓN
-        # -----------------------------------------------------------------
-        story.append(Spacer(1, 4))
-        plan_bloque = []
-        plan_bloque.append(Paragraph("6. Plan de Acción Priorizado y Cronograma de Cumplimiento", self.estilo_seccion_num))
-        plan_bloque.append(Paragraph(
-            "Se establece el plan de intervención técnica priorizado en tres fases operativas para subsanar los hallazgos "
-            "conforme a los estándares del Consejo Colombiano de Seguridad (CCS) y la NTC 1461:",
-            self.estilo_parrafo
-        ))
-
-        tabla_plan_datos = [
-            [
-                Paragraph("<b>Fase / Plazo</b>", self.estilo_celda_th),
-                Paragraph("<b>Actividad Técnica y Especificación de Compra</b>", self.estilo_celda_th),
-                Paragraph("<b>Norma Reguladora</b>", self.estilo_celda_th),
-                Paragraph("<b>Responsable Designado</b>", self.estilo_celda_th),
-                Paragraph("<b>Entregable Verificable</b>", self.estilo_celda_th)
-            ],
-            [
-                Paragraph("<b>Fase 1: Inmediato</b><br/>(&lt; 48 Horas)", self.estilo_celda_bold),
-                Paragraph("Adquisición de extintores ABC de 10 lbs recargados y camilla espinal rígida con correas tipo araña e inmovilizador. Señalización provisional de piso resbaloso.", self.estilo_celda),
-                Paragraph("NSR-10 Título J<br/>Res. 2400/79 Art. 164", self.estilo_celda),
-                Paragraph("Dirección de Compras y Coordinación SST", self.estilo_celda),
-                Paragraph("Acta de entrega y recibo a satisfacción con tarjeta de inspección.", self.estilo_celda)
-            ],
-            [
-                Paragraph("<b>Fase 2: Corto Plazo</b><br/>(&lt; 15 Días)", self.estilo_celda_bold),
-                Paragraph("Instalación de señalética fotoluminiscente Clase A (210 mcd/m²) de rutas de evacuación (30x15cm a 1.70m y zócalo a 30cm). Fijación de letreros Ley 1335 de prohibido fumar y demarcación de franjas de 10cm en pasillos.", self.estilo_celda),
-                Paragraph("NTC 1461<br/>ISO 16069<br/>Ley 1335 de 2009<br/>Res. 2400/79 Art. 281", self.estilo_celda),
-                Paragraph("Mantenimiento Locativo y Auditor SST", self.estilo_celda),
-                Paragraph("Inspección de luminancia y registro fotográfico de conformidad cromática y dimensional.", self.estilo_celda)
-            ],
-            [
-                Paragraph("<b>Fase 3: Mediano Plazo</b><br/>(&lt; 30 Días)", self.estilo_celda_bold),
-                Paragraph("Diseño e instalación de red contra incendios con gabinetes tipo II/III equipados con manguera, llave spanner y boquilla según NSR-10. Instalación de poste reflectivo de 60x60cm para punto de encuentro.", self.estilo_celda),
-                Paragraph("NSR-10 (Título J)<br/>NTC 1669 / NFPA 14<br/>Decreto 1072/2015", self.estilo_celda),
-                Paragraph("Rectoría / Dirección de Infraestructura", self.estilo_celda),
-                Paragraph("Certificación hidrostática de la red y planimetría de emergencias actualizada.", self.estilo_celda)
-            ]
-        ]
-
-        t_plan = Table(tabla_plan_datos, colWidths=[80, 160, 100, 95, 105])
-        t_plan.setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#0f2444')),
-            ('ALIGN', (0,0), (-1,0), 'CENTER'),
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
-            ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#94a3b8')),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#cbd5e1')),
-            ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor('#ffffff'), colors.HexColor('#f8fafc')]),
-            ('TOPPADDING', (0,0), (-1,-1), 3),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 3),
-            ('LEFTPADDING', (0,0), (-1,-1), 3),
-            ('RIGHTPADDING', (0,0), (-1,-1), 3),
-        ]))
-        plan_bloque.append(t_plan)
-        story.append(KeepTogether(plan_bloque))
+        # =================================================================
+        # SECCIÓN 3: DICTAMEN PERICIAL Y FIRMAS DE RESPONSABILIDAD
+        # =================================================================
         story.append(Spacer(1, 6))
-
-        # -----------------------------------------------------------------
-        # 7. CONCLUSIONES Y DICTAMEN PERICIAL
-        # -----------------------------------------------------------------
         conclusiones_bloque = []
-        conclusiones_bloque.append(Paragraph("7. Conclusiones y Dictamen de Auditoría Pericial", self.estilo_seccion_num))
+        conclusiones_bloque.append(Paragraph("3. Dictamen de Auditoría Pericial y Certificación", self.estilo_seccion_num))
         
-        texto_conclusiones = (
-            "La auditoría técnica constata una brecha legal y técnica sustancial entre el estado actual de las instalaciones del bloque "
-            "y las prescripciones obligatorias del marco normativo colombiano (Decreto 1072 de 2015, NSR-10 Títulos J y K, NTC 1461 y Resolución 2400 de 1979). "
-            "La carencia simultánea de equipos de extinción portátiles, redes hídricas, elementos de inmovilización médica y señalización fotoluminiscente "
-            "eleva el índice de vulnerabilidad de la comunidad académica ante situaciones de emergencia o siniestro, exponiendo además a la entidad a sanciones "
-            "onerosas por parte de las entidades administradoras de riesgos laborales (ARL) y el Ministerio de Trabajo.<br/><br/>"
-            "Se dictamina la necesidad imperiosa de ejecutar con carácter prioritario el Plan de Acción formulado en el numeral 6, "
-            "adquiriendo señales normalizadas bajo las especificaciones cromáticas (colores de seguridad y contraste reglamentarios), dimensionales "
-            "(cálculo S &ge; d² / 2000), materiales con tintas UV sobre poliestireno o lámina electrostática y propiedades fotoluminiscentes Clase A."
+        texto_dictamen = (
+            f"El suscrito auditor técnico certifica que la presente inspección correspondiente al expediente <b>{numero_insp}</b> "
+            f"fue ejecutada in situ con estricto apego a las disposiciones legales colombianas del SG-SST (Decreto 1072 de 2015, "
+            f"Resolución 2400 de 1979, NSR-10 y NTC 1461). Las {total_evidencias} evidencias fotográficas documentadas reflejan "
+            f"fidedignamente el estado físico y operativo de las instalaciones auditadas.<br/><br/>"
+            f"Se dictamina dar trámite prioritario a las acciones correctivas señaladas en la Matriz de Hallazgos, "
+            f"garantizando la señalización fotoluminiscente Clase A, el despeje reglamentario de extintores y las rutas de evacuación seguras."
         )
-        conclusiones_bloque.append(Paragraph(texto_conclusiones, self.estilo_parrafo))
-        conclusiones_bloque.append(Spacer(1, 24))
+        conclusiones_bloque.append(Paragraph(texto_dictamen, self.estilo_parrafo))
+        conclusiones_bloque.append(Spacer(1, 20))
 
-        # Firmas formales de certificación pericial
+        # Firmas periciales
         conclusiones_bloque.append(Table([
             [
                 Paragraph(
                     "____________________________________________________<br/>"
                     f"<b>{responsable}</b><br/>"
                     "Auditor Líder / Especialista SST<br/>"
-                    "Licencia en Salud Ocupacional / SST Vigente<br/>"
-                    "Politécnico Grancolombiano · Sede Medellín",
+                    "Licencia en Seguridad y Salud en el Trabajo Vigente<br/>"
+                    f"{institucion_txt}",
                     self.estilo_celda
                 ),
                 Paragraph(
                     "____________________________________________________<br/>"
-                    "<b>Rectoría / Dirección Administrativa y Financiera</b><br/>"
+                    "<b>Dirección Administrativa y Financiera / Rectoría</b><br/>"
                     "Representante Legal / Gerencia del SG-SST<br/>"
-                    "Politécnico Grancolombiano · Sede Medellín",
+                    f"{institucion_txt}",
                     self.estilo_celda
                 )
             ]

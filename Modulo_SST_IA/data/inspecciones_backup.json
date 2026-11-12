@@ -1,0 +1,811 @@
+[
+  {
+    "id": "3ec4bd4b-e17d-4efe-9f83-98ce61aba286",
+    "numero": "#0003",
+    "fecha": "2026-10-26 12:34",
+    "sede": "Politécnico Grancolombiano, Sede Medellín",
+    "edificio": "Campus Principal",
+    "area": "Pasillos de Laboratorios y Aulas Múltiples",
+    "responsable": "Yair Alexander Córdoba Palomeque",
+    "estado": "enCurso",
+    "evidencias": [
+      {
+        "id": "7de21439-0b4f-4d1e-b099-fa8c8504fa17",
+        "foto_path": "C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_9d2e2d9df4.jpg",
+        "foto_url": "/static/uploads/evidencia_9d2e2d9df4.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-26 12:34:43",
+        "hallazgos": [
+          {
+            "id": "9dea1d5b-ef95-497d-881e-4731ab94d756",
+            "elemento": "Señal: Flecha Direccional de Ruta de Evacuación",
+            "categoria": "Verdes",
+            "condicion": "Conforme",
+            "confianza": 0.98,
+            "estado": "validado",
+            "recomendacion": "Disponer señales fotoluminiscentes Clase A cada 15 metros a lo largo de los pasillos a 1.70m de altura, orientadas inequívocamente hacia las salidas de emergencia conforme a la ISO 16069 y NSR-10.",
+            "bbox": [
+              0.0,
+              118.6,
+              552.9,
+              435.1
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-26 12:34:43",
+            "norma": "",
+            "color_seguridad": "",
+            "color_contraste": "",
+            "forma_geometrica": "",
+            "cobertura_min_color": "Verde >= 50% de la superficie total",
+            "tamano_recomendado": "",
+            "altura_montaje": "",
+            "checklist_sst": [
+              "1. Coherencia en la dirección de las flechas hacia la salida real más cercana (sin flechas contradictorias).",
+              "2. Interpretación de flechas según ISO 16069 (flecha arriba: seguir recto / subir; flecha diagonal: bajar rampa/escalera).",
+              "3. Separación entre señales no mayor a 15 metros en pasillos rectos y obligatoria en todo quiebre o cruce.",
+              "4. Sin interrupciones por cortinas, letreros publicitarios ni cuadros decorativos."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "6620c82c-8fd7-497b-881d-18edb3111644",
+    "numero": "#0002",
+    "fecha": "2026-10-14 17:20",
+    "sede": "Politécnico Grancolombiano, Sede Medellín",
+    "edificio": "A",
+    "area": "Universidad",
+    "responsable": "Yair Alexander Córdoba Palomeque",
+    "estado": "finalizada",
+    "evidencias": [
+      {
+        "id": "6ba523b2-c9e5-4000-96bc-ce18dc0ccbe9",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_94e943c6d9.jpg",
+        "foto_url": "/static/uploads/evidencia_94e943c6d9.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-14 17:21:05",
+        "hallazgos": [
+          {
+            "id": "c5d59fb7-fe40-4417-9f2f-42c934f88eb8",
+            "elemento": "Señal: Peligro Piso Resbaloso / Caída al Mismo Nivel",
+            "categoria": "Amarillas",
+            "condicion": "Requiere verificación",
+            "confianza": 0.74,
+            "estado": "validado",
+            "recomendacion": "Mantener señalética visible mientras se realiza limpieza o secado de pisos para evitar caídas y resbalones (OSHA 1910.22).",
+            "bbox": [
+              133.0,
+              5.0,
+              393.0,
+              469.0
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-14 17:21:05"
+          }
+        ]
+      },
+      {
+        "id": "f1dfec6c-0833-4cc9-beb9-c83fa7158635",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_57bdafe874.jpg",
+        "foto_url": "/static/uploads/evidencia_57bdafe874.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-14 17:22:09",
+        "hallazgos": [
+          {
+            "id": "19d6d267-4f4d-4c59-991a-e35de8f5777a",
+            "elemento": "Señal: Peligro Piso Resbaloso / Caída al Mismo Nivel",
+            "categoria": "Amarillas",
+            "condicion": "Requiere verificación",
+            "confianza": 0.98,
+            "estado": "rechazado",
+            "recomendacion": "Mantener señalética visible mientras se realiza limpieza o secado de pisos para evitar caídas y resbalones (OSHA 1910.22).",
+            "bbox": [
+              20.0,
+              16.0,
+              1194.0,
+              1191.0
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-14 17:22:09"
+          }
+        ]
+      },
+      {
+        "id": "f50d6fa9-cc9b-4f7d-8376-af022d89a846",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_edb9e6df67.jpg",
+        "foto_url": "/static/uploads/evidencia_edb9e6df67.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-14 17:22:51",
+        "hallazgos": [
+          {
+            "id": "4e5bb35a-c463-49b1-b942-d26ac8153de6",
+            "elemento": "Señal: Peligro Piso Resbaloso / Caída al Mismo Nivel",
+            "categoria": "Amarillas",
+            "condicion": "Requiere verificación",
+            "confianza": 0.96,
+            "estado": "rechazado",
+            "recomendacion": "Mantener señalética visible mientras se realiza limpieza o secado de pisos para evitar caídas y resbalones (OSHA 1910.22).",
+            "bbox": [
+              44.0,
+              40.0,
+              290.0,
+              284.0
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-14 17:22:51"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "3e70bf66-b898-48d8-822c-dff30162b52d",
+    "numero": "#0001",
+    "fecha": "2026-10-14 17:06",
+    "sede": "Sede Test",
+    "edificio": "Edificio Central",
+    "area": "Almacen",
+    "responsable": "Ing. Tester",
+    "estado": "enCurso",
+    "evidencias": [
+      {
+        "id": "13ea5fdd-cb57-4263-9f0c-ebf10b80ab26",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_df34b6502f.jpg",
+        "foto_url": "/static/uploads/evidencia_df34b6502f.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-15 19:44:14",
+        "hallazgos": [
+          {
+            "id": "3d0409da-78cd-4e4d-a607-474bbf52d20a",
+            "elemento": "Señal: Prohibido el Uso de Teléfono Móvil",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.98,
+            "estado": "validado",
+            "recomendacion": "Garantizar cumplimiento estricto en áreas con atmósferas explosivas, salas de control o zonas de operación de maquinaria pesada.",
+            "bbox": [
+              20.0,
+              18.0,
+              726.0,
+              725.0
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-15 19:44:14"
+          }
+        ]
+      },
+      {
+        "id": "8f263593-747e-45a2-9fde-d11dea9fd708",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_879af50d2a.jpg",
+        "foto_url": "/static/uploads/evidencia_879af50d2a.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-15 20:41:56",
+        "hallazgos": [
+          {
+            "id": "946d7ebc-7aac-456e-8942-c61e94cc1120",
+            "elemento": "Señal: Prohibido Fumar",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.21,
+            "estado": "pendiente",
+            "recomendacion": "Asegurar visibilidad de la señal a una altura recomendada entre 1.60m y 1.80m en zonas de almacenamiento de inflamables.",
+            "bbox": [
+              1.7,
+              125.6,
+              1280.0,
+              720.0
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-15 20:41:56"
+          }
+        ]
+      },
+      {
+        "id": "e611ef83-2323-4307-aa7f-26427e900774",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_79bb6f677c.jpg",
+        "foto_url": "/static/uploads/evidencia_79bb6f677c.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 08:08:40",
+        "hallazgos": [
+          {
+            "id": "5b0e9201-1517-44d6-becb-5daae6ecf52c",
+            "elemento": "Inspección General de Área",
+            "categoria": "Amarillas",
+            "condicion": "Requiere verificación",
+            "confianza": 0.88,
+            "estado": "pendiente",
+            "recomendacion": "Realizar evaluación minuciosa de condiciones subestándar y actos inseguros en el puesto de trabajo.",
+            "bbox": [
+              192.0,
+              108.0,
+              1088.0,
+              612.0
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 08:08:40"
+          }
+        ]
+      },
+      {
+        "id": "aeedb114-9501-4180-8c84-c5726c22c2b6",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_efbd8d3110.jpg",
+        "foto_url": "/static/uploads/evidencia_efbd8d3110.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 08:22:06",
+        "hallazgos": [
+          {
+            "id": "cb2567a4-aa15-4a53-b265-62ee81dea6cc",
+            "elemento": "Señal: Prohibido el Uso de Teléfono Móvil",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.8,
+            "estado": "validado",
+            "recomendacion": "Garantizar cumplimiento estricto en áreas con atmósferas explosivas, salas de control o zonas de operación de maquinaria pesada.",
+            "bbox": [
+              14.1,
+              2.2,
+              724.2,
+              734.9
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 08:22:06"
+          }
+        ]
+      },
+      {
+        "id": "52a11511-3eed-4a7d-8745-6fb2b8e7c02b",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_f8730b2f72.jpg",
+        "foto_url": "/static/uploads/evidencia_f8730b2f72.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 08:24:46",
+        "hallazgos": [
+          {
+            "id": "f4d0de9e-08e3-4e45-8df7-fed49bb56d48",
+            "elemento": "Señal: Peligro Piso Resbaloso / Caída al Mismo Nivel",
+            "categoria": "Amarillas",
+            "condicion": "Requiere verificación",
+            "confianza": 0.98,
+            "estado": "pendiente",
+            "recomendacion": "Mantener señalética visible mientras se realiza limpieza o secado de pisos para evitar caídas y resbalones (OSHA 1910.22).",
+            "bbox": [
+              315.1,
+              24.1,
+              896.1,
+              1186.5
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 08:24:46"
+          }
+        ]
+      },
+      {
+        "id": "2d560a7f-151e-4f8a-9256-00fdc46c635b",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_289eafb3aa.jpg",
+        "foto_url": "/static/uploads/evidencia_289eafb3aa.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 09:13:21",
+        "hallazgos": [
+          {
+            "id": "9ba4a7ce-6cfd-4f53-a5d8-327f66ba22cd",
+            "elemento": "Señal: Peligro Piso Resbaloso / Caída al Mismo Nivel",
+            "categoria": "Amarillas",
+            "condicion": "Requiere verificación",
+            "confianza": 0.99,
+            "estado": "validado",
+            "recomendacion": "Mantener señalética visible mientras se realiza limpieza o secado de pisos para evitar caídas y resbalones (OSHA 1910.22).",
+            "bbox": [
+              292.8,
+              312.7,
+              512.1,
+              520.2
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 09:13:21"
+          }
+        ]
+      },
+      {
+        "id": "c0523b96-2c8e-43ac-b67c-5bd3127986ee",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_e744bacab7.jpg",
+        "foto_url": "/static/uploads/evidencia_e744bacab7.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 09:14:03",
+        "hallazgos": [
+          {
+            "id": "65fc360a-0ce4-481c-932e-45e1c92ddb54",
+            "elemento": "Señal: Prohibido el Uso de Teléfono Móvil",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.98,
+            "estado": "validado",
+            "recomendacion": "Garantizar cumplimiento estricto en áreas con atmósferas explosivas, salas de control o zonas de operación de maquinaria pesada.",
+            "bbox": [
+              0.8,
+              0.0,
+              736.0,
+              736.0
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 09:14:03"
+          }
+        ]
+      },
+      {
+        "id": "b970efe9-d7c7-42cf-9cf6-f0f6573f00c8",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_3157b0c47f.jpg",
+        "foto_url": "/static/uploads/evidencia_3157b0c47f.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 09:14:43",
+        "hallazgos": [
+          {
+            "id": "e4483662-2100-4d3f-b601-46730349ee5a",
+            "elemento": "Señal: Prohibido Ingerir Alimentos y Bebidas",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.93,
+            "estado": "validado",
+            "recomendacion": "Garantizar cumplimiento estricto en laboratorios, talleres industriales y áreas con presencia de sustancias químicas o biológicas.",
+            "bbox": [
+              15.1,
+              40.3,
+              752.5,
+              1083.6
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 09:14:43"
+          }
+        ]
+      },
+      {
+        "id": "c910c04c-936b-40a2-8fcb-6f01a865af53",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_abe58cda58.jpg",
+        "foto_url": "/static/uploads/evidencia_abe58cda58.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 12:48:11",
+        "hallazgos": [
+          {
+            "id": "92285bbd-3ff0-4248-a355-7282d82cb2d9",
+            "elemento": "Señal: Prohibido Ingerir Alimentos y Bebidas",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.95,
+            "estado": "validado",
+            "recomendacion": "Garantizar cumplimiento estricto en laboratorios, talleres industriales y áreas con presencia de sustancias químicas o biológicas.",
+            "bbox": [
+              22.6,
+              28.2,
+              311.9,
+              481.6
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 12:48:11"
+          }
+        ]
+      },
+      {
+        "id": "6e4892a9-cce8-413d-9ca3-5eb295866c46",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_4defa169d8.jpg",
+        "foto_url": "/static/uploads/evidencia_4defa169d8.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 12:48:59",
+        "hallazgos": [
+          {
+            "id": "0fb2e801-6bdf-4b0c-a56a-98c70843ae53",
+            "elemento": "Señal: Prohibido el Uso de Teléfono Móvil",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.84,
+            "estado": "pendiente",
+            "recomendacion": "Garantizar cumplimiento estricto en áreas con atmósferas explosivas, salas de control o zonas de operación de maquinaria pesada.",
+            "bbox": [
+              110.3,
+              40.3,
+              634.4,
+              554.3
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 12:48:59"
+          }
+        ]
+      },
+      {
+        "id": "5fac871d-3e6d-4fb3-8edf-3b0cf3c48d3a",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_5d0a823153.jpg",
+        "foto_url": "/static/uploads/evidencia_5d0a823153.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 12:52:32",
+        "hallazgos": [
+          {
+            "id": "e50775f1-9d3c-4ced-a665-3ec8f5752a4a",
+            "elemento": "Sin Detección de Señal SST",
+            "categoria": "Amarillas",
+            "condicion": "No identificada",
+            "confianza": 0.0,
+            "estado": "pendiente",
+            "recomendacion": "No se identificó claramente ninguna de las 3 señales (piso-resbaloso, prohibido-celular, prohibido-comer). Asegúrate de enfocar bien la señal y con buena iluminación.",
+            "bbox": null,
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 12:52:32"
+          }
+        ]
+      },
+      {
+        "id": "d3f89aea-62d1-451f-a228-f2e237d0448f",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_b64f417779.jpg",
+        "foto_url": "/static/uploads/evidencia_b64f417779.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 12:54:18",
+        "hallazgos": [
+          {
+            "id": "35126ba8-184f-4336-911c-668c60532d4b",
+            "elemento": "Sin Detección de Señal SST",
+            "categoria": "Amarillas",
+            "condicion": "No identificada",
+            "confianza": 0.0,
+            "estado": "pendiente",
+            "recomendacion": "No se identificó claramente ninguna de las 3 señales (piso-resbaloso, prohibido-celular, prohibido-comer). Asegúrate de enfocar bien la señal y con buena iluminación.",
+            "bbox": null,
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 12:54:18"
+          }
+        ]
+      },
+      {
+        "id": "4fc5b091-03c8-46ae-9032-fe8f3ecfa3a5",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_d11f9171a3.jpg",
+        "foto_url": "/static/uploads/evidencia_d11f9171a3.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 12:54:31",
+        "hallazgos": [
+          {
+            "id": "d84ad000-db65-4017-b52d-7f20d702fd34",
+            "elemento": "Señal: Prohibido Ingerir Alimentos y Bebidas",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.6,
+            "estado": "pendiente",
+            "recomendacion": "Garantizar cumplimiento estricto en laboratorios, talleres industriales y áreas con presencia de sustancias químicas o biológicas.",
+            "bbox": [
+              346.6,
+              180.7,
+              697.0,
+              927.1
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 12:54:31"
+          }
+        ]
+      },
+      {
+        "id": "4cfacea5-2a40-4d2a-8d0f-e228037c9898",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_2fac40acf6.jpg",
+        "foto_url": "/static/uploads/evidencia_2fac40acf6.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 15:14:19",
+        "hallazgos": [
+          {
+            "id": "9d97b8c4-6c08-4059-bde0-e1f92bae059c",
+            "elemento": "Gabinete Contra Incendio / Manguera",
+            "categoria": "Rojas",
+            "condicion": "Requiere verificación",
+            "confianza": 0.35,
+            "estado": "validado",
+            "recomendacion": "Mantener radio libre de 1 metro alrededor del gabinete. Verificar que la puerta abra sin obstrucciones a 180°.",
+            "bbox": [
+              308.4,
+              68.6,
+              719.8,
+              857.5
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 15:14:19"
+          }
+        ]
+      },
+      {
+        "id": "e370087d-de2f-47df-a124-13e03f0384ab",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_c347bec29b.jpg",
+        "foto_url": "/static/uploads/evidencia_c347bec29b.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 15:14:47",
+        "hallazgos": [
+          {
+            "id": "58d699e8-6264-4ac0-a035-c16e98d5c892",
+            "elemento": "Señal: Punto de Encuentro / Zona Segura",
+            "categoria": "Verdes",
+            "condicion": "Conforme",
+            "confianza": 0.97,
+            "estado": "validado",
+            "recomendacion": "Constatar demarcación visible en el piso y señal exterior visible libre de riesgos de caída de postes o vidrios.",
+            "bbox": [
+              0.0,
+              0.3,
+              443.0,
+              622.3
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 15:14:47"
+          }
+        ]
+      },
+      {
+        "id": "6cce6e61-25f6-4d0a-9ce8-63d3501e5f6e",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_d49607dff9.jpg",
+        "foto_url": "/static/uploads/evidencia_d49607dff9.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 15:19:43",
+        "hallazgos": [
+          {
+            "id": "ef8b2a5d-1e5a-4bf4-8777-9239eba95962",
+            "elemento": "Señal: Prohibido el Uso de Teléfono Móvil",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.99,
+            "estado": "validado",
+            "recomendacion": "Garantizar cumplimiento estricto en áreas con atmósferas explosivas, salas de control o zonas de operación de maquinaria pesada.",
+            "bbox": [
+              0.0,
+              0.0,
+              1198.5,
+              1199.3
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 15:19:43"
+          }
+        ]
+      },
+      {
+        "id": "7f9117fe-cca7-449e-a1cc-a9223a61f949",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_ca34f388cf.jpg",
+        "foto_url": "/static/uploads/evidencia_ca34f388cf.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 15:20:01",
+        "hallazgos": [
+          {
+            "id": "389e133a-6c50-4b4f-ac8a-649c820ccc9f",
+            "elemento": "Señal: Prohibido Ingerir Alimentos y Bebidas",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.96,
+            "estado": "validado",
+            "recomendacion": "Garantizar cumplimiento estricto en laboratorios, talleres industriales y áreas con presencia de sustancias químicas o biológicas.",
+            "bbox": [
+              0.0,
+              21.8,
+              456.4,
+              486.1
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 15:20:01"
+          }
+        ]
+      },
+      {
+        "id": "d477b7b9-5e5e-40ef-a4d7-5b64b765568c",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_1f4f69f8e1.jpg",
+        "foto_url": "/static/uploads/evidencia_1f4f69f8e1.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 15:20:24",
+        "hallazgos": [
+          {
+            "id": "fef832e4-7249-458f-b50a-2f7f819d416f",
+            "elemento": "Señal: Prohibido Fumar",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.99,
+            "estado": "validado",
+            "recomendacion": "Asegurar visibilidad de la señal a una altura recomendada entre 1.60m y 1.80m en zonas de almacenamiento de inflamables.",
+            "bbox": [
+              0.0,
+              0.0,
+              610.8,
+              612.0
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 15:20:24"
+          }
+        ]
+      },
+      {
+        "id": "5c01a4d4-3bab-4984-8618-6a2707e999c1",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_4e6518b6f0.jpg",
+        "foto_url": "/static/uploads/evidencia_4e6518b6f0.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 15:20:38",
+        "hallazgos": [
+          {
+            "id": "12091e12-3e4c-4467-95b1-9593b8928f04",
+            "elemento": "Señal: Punto de Encuentro / Zona Segura",
+            "categoria": "Verdes",
+            "condicion": "Conforme",
+            "confianza": 0.97,
+            "estado": "validado",
+            "recomendacion": "Constatar demarcación visible en el piso y señal exterior visible libre de riesgos de caída de postes o vidrios.",
+            "bbox": [
+              0.0,
+              0.3,
+              443.0,
+              622.3
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 15:20:38"
+          }
+        ]
+      },
+      {
+        "id": "a01e3a5e-4dad-4b67-a7b3-8184a79fdd73",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_b39e59280e.jpg",
+        "foto_url": "/static/uploads/evidencia_b39e59280e.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 15:21:05",
+        "hallazgos": [
+          {
+            "id": "92aab42b-691f-4393-be41-d3cc67a2e169",
+            "elemento": "Señal: Ruta de Evacuación",
+            "categoria": "Verdes",
+            "condicion": "Conforme",
+            "confianza": 0.97,
+            "estado": "validado",
+            "recomendacion": "Verificar dirección de flecha de escape y visibilidad fotoluminiscente continua hacia las salidas de emergencia.",
+            "bbox": [
+              4.1,
+              0.0,
+              1188.2,
+              520.0
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 15:21:05"
+          }
+        ]
+      },
+      {
+        "id": "63dd3430-d802-4f0b-bca2-6c5eed7097fd",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_cc37e99b6e.jpg",
+        "foto_url": "/static/uploads/evidencia_cc37e99b6e.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 15:21:26",
+        "hallazgos": [
+          {
+            "id": "5d69eb68-6cd9-455f-a69e-f4483aa1ed53",
+            "elemento": "Gabinete Contra Incendio / Manguera",
+            "categoria": "Rojas",
+            "condicion": "Requiere verificación",
+            "confianza": 0.91,
+            "estado": "validado",
+            "recomendacion": "Mantener radio libre de 1 metro alrededor del gabinete. Verificar que la puerta abra sin obstrucciones a 180°.",
+            "bbox": [
+              1.7,
+              83.8,
+              1198.8,
+              1198.2
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 15:21:26"
+          }
+        ]
+      },
+      {
+        "id": "752c1b46-2579-4d98-9e7c-ca9b84105f12",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\ModeloIA\\app\\static\\uploads\\evidencia_a5974ccac7.jpg",
+        "foto_url": "/static/uploads/evidencia_a5974ccac7.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-19 15:21:50",
+        "hallazgos": [
+          {
+            "id": "cdaf168c-09ad-46f5-af4e-4f1db2deb4b2",
+            "elemento": "Extintor de Incendio",
+            "categoria": "Rojas",
+            "condicion": "Requiere verificación",
+            "confianza": 0.76,
+            "estado": "validado",
+            "recomendacion": "Verificar manómetro en zona verde, precinto de seguridad y tarjeta de inspección mensual vigente según NTP 350.043.",
+            "bbox": [
+              0.0,
+              0.0,
+              966.3,
+              1800.0
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-19 15:21:50"
+          }
+        ]
+      },
+      {
+        "id": "298cb78e-af44-49b2-9366-4b37089233fa",
+        "foto_path": "C:\\Users\\Yairc\\Downloads\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_92e76e6ac8.jpg",
+        "foto_url": "/static/uploads/evidencia_92e76e6ac8.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-10-24 12:01:36",
+        "hallazgos": [
+          {
+            "id": "0125c1bd-d400-4a44-a38a-c5004a7532fd",
+            "elemento": "Gabinete Contra Incendio / Manguera y Válvula",
+            "categoria": "Rojas",
+            "condicion": "Requiere verificación",
+            "confianza": 0.79,
+            "estado": "validado",
+            "recomendacion": "Garantizar radio libre de 1.0 metro alrededor del gabinete. Instalar señal fotoluminiscente de 30x30cm a 1.80m y verificar apertura a 180° y operatividad de la válvula según NTC 1669 / NSR-10.",
+            "bbox": [
+              0.0,
+              0.0,
+              736.0,
+              980.8
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-10-24 12:01:36",
+            "norma": "",
+            "color_seguridad": "",
+            "color_contraste": "",
+            "forma_geometrica": "",
+            "cobertura_min_color": ">= 50% de la superficie total",
+            "tamano_recomendado": "",
+            "altura_montaje": "",
+            "checklist_sst": [
+              "1. Puerta de fácil apertura a 180° con vidrio o acrílico intacto y sin cerradura con llave.",
+              "2. Manguera plegada o en devanadera sin estrangulaciones y con acople rápido certificado.",
+              "3. Válvula angular de compuerta operativa, sin fugas ni corrosión en roscas.",
+              "4. Hacha de pico, llave de spanner y boquilla de chorro-niebla presentes en su soporte.",
+              "5. Radio de 1 metro totalmente libre de objetos y señal visible a más de 15 metros."
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

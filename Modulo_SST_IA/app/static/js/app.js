@@ -171,9 +171,15 @@ async function refrescarDatos() {
       actualizarDashboard();
       actualizarHistorial();
       
-      // Buscar si hay una activa
-      const activa = appState.inspecciones.find(i => i.estado === 'enCurso');
-      appState.inspeccionActiva = activa || null;
+      // Mantener la inspección activa actual o buscar la primera activa
+      let activa = null;
+      if (appState.inspeccionActiva && appState.inspeccionActiva.id) {
+        activa = appState.inspecciones.find(i => i.id === appState.inspeccionActiva.id);
+      }
+      if (!activa) {
+        activa = appState.inspecciones.find(i => i.estado === 'enCurso') || appState.inspecciones[0] || null;
+      }
+      appState.inspeccionActiva = activa;
       actualizarVistaInspeccionActiva();
     }
   } catch (e) {
@@ -374,7 +380,7 @@ function actualizarHistorial() {
       </td>
       <td style="text-align: right;">
         <div style="display: inline-flex; gap: 0.4rem;">
-          <a href="/api/inspecciones/${i.id}/informe.pdf" target="_blank" class="btn btn-secondary btn-sm">
+          <a href="/api/inspecciones/${i.id}/informe.pdf" target="_blank" class="btn btn-secondary btn-sm" title="Descargar informe técnico PDF">
             📄 PDF
           </a>
           <button class="btn btn-danger-soft btn-sm" onclick="eliminarInspeccion('${i.id}')" title="Eliminar registro de auditoría">
