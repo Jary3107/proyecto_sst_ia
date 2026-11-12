@@ -11,31 +11,20 @@ import '../utils/constants.dart';
 /// Servicio de generación de Informes Técnicos Periciales de Inspección SST.
 /// Conecta con el motor ReportLab de Modulo_SST_IA y posee generador de respaldo local en Dart.
 class PdfService {
-  static String get backendGenerarPdfUrl {
-    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.0.2.2:5000/api/informes/generar_pdf';
-    }
-    return 'http://127.0.0.1:5000/api/informes/generar_pdf';
-  }
-
-  static String get backendPdfUrl {
-    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.0.2.2:5000/api/inspecciones/activa/informe.pdf';
-    }
-    return 'http://127.0.0.1:5000/api/inspecciones/activa/informe.pdf';
-  }
+  static String get backendGenerarPdfUrl => '$backendBaseUrl/api/informes/generar_pdf';
+  static String get backendPdfUrl => '$backendBaseUrl/api/inspecciones/activa/informe.pdf';
 
   Future<Uint8List> generar(Inspeccion i) async {
-    // 1. Intentar enviar la inspección actual con fotos al motor ReportLab de Modulo_SST_IA
+    // 1. Intentar enviar la inspección actual con fotos al motor ReportLab en Render
     try {
-      debugPrint('[SST-IA] Solicitando PDF oficial a Modulo_SST_IA: $backendGenerarPdfUrl');
+      debugPrint('[SST-IA] Solicitando PDF oficial a Render: $backendGenerarPdfUrl');
       final resp = await http
           .post(
             Uri.parse(backendGenerarPdfUrl),
             headers: {'Content-Type': 'application/json; charset=utf-8'},
             body: jsonEncode(i.toMap()),
           )
-          .timeout(const Duration(seconds: 15));
+          .timeout(const Duration(seconds: 45));
 
       if (resp.statusCode == 200 && resp.bodyBytes.isNotEmpty) {
         debugPrint('[SST-IA] PDF pericial recibido con éxito del backend ReportLab (${resp.bodyBytes.length} bytes).');

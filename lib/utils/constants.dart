@@ -11,6 +11,9 @@ class C {
   static const texto2 = Color(0xFF6B7585);
 }
 
+/// URL del Backend en Render (FastAPI + YOLOv8 + ReportLab)
+const String backendBaseUrl = 'https://proyecto-sst-ia.onrender.com';
+
 const sedes = ['Campus Principal', 'Sede Norte'];
 const edificios = ['Laboratorios', 'Administrativo', 'Biblioteca'];
 const areas = ['Primer piso', 'Segundo piso', 'Sótano', 'Exteriores'];

@@ -14,12 +14,7 @@ import 'analisis_simulado_service.dart';
 class ServicioAnalisisIAService implements AnalisisService {
   final ServicioAnalisisSimulado _fallback = ServicioAnalisisSimulado();
 
-  String get _urlServidor {
-    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.0.2.2:5000/analizar';
-    }
-    return 'http://127.0.0.1:5000/analizar';
-  }
+  String get _urlServidor => '$backendBaseUrl/analizar';
 
   @override
   Future<Hallazgo> analizar(Evidencia e) async {
@@ -44,14 +39,14 @@ class ServicioAnalisisIAService implements AnalisisService {
         'adicional': e.adicional,
       });
 
-      debugPrint('[SST-IA] Conectando a backend Modulo_SST_IA: $_urlServidor');
+      debugPrint('[SST-IA] Conectando a backend Render SST-IA: $_urlServidor');
       final resp = await http
           .post(
             Uri.parse(_urlServidor),
             headers: {'Content-Type': 'application/json; charset=utf-8'},
             body: payload,
           )
-          .timeout(const Duration(seconds: 20));
+          .timeout(const Duration(seconds: 45));
 
       if (resp.statusCode == 200) {
         final data = jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
