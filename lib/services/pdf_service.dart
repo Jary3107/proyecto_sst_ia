@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../models/hallazgo.dart';
@@ -11,6 +11,13 @@ import '../utils/constants.dart';
 /// Servicio de generación de Informes Técnicos Periciales de Inspección SST.
 /// Conecta con el motor ReportLab de Modulo_SST_IA y posee generador de respaldo local en Dart.
 class PdfService {
+  static String get backendGenerarPdfUrl {
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      return 'http://10.0.2.2:5000/api/informes/generar_pdf';
+    }
+    return 'http://127.0.0.1:5000/api/informes/generar_pdf';
+  }
+
   static String get backendPdfUrl {
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
       return 'http://10.0.2.2:5000/api/inspecciones/activa/informe.pdf';
@@ -19,28 +26,68 @@ class PdfService {
   }
 
   Future<Uint8List> generar(Inspeccion i) async {
-    // 1. Obtener directamente el informe oficial en PDF generado por ReportLab en Modulo_SST_IA
+    // 1. Intentar enviar la inspección actual con fotos al motor ReportLab de Modulo_SST_IA
     try {
-      debugPrint('[SST-IA] Obteniendo PDF oficial desde Modulo_SST_IA: $backendPdfUrl');
-      final resp = await http.get(Uri.parse(backendPdfUrl)).timeout(const Duration(seconds: 15));
+      debugPrint('[SST-IA] Solicitando PDF oficial a Modulo_SST_IA: $backendGenerarPdfUrl');
+      final resp = await http
+          .post(
+            Uri.parse(backendGenerarPdfUrl),
+            headers: {'Content-Type': 'application/json; charset=utf-8'},
+            body: jsonEncode(i.toMap()),
+          )
+          .timeout(const Duration(seconds: 15));
 
       if (resp.statusCode == 200 && resp.bodyBytes.isNotEmpty) {
         debugPrint('[SST-IA] PDF pericial recibido con éxito del backend ReportLab (${resp.bodyBytes.length} bytes).');
         return resp.bodyBytes;
-      } else {
-        debugPrint('[SST-IA] Servidor retornó código ${resp.statusCode}, usando generador local.');
       }
     } catch (e) {
-      debugPrint('[SST-IA] Backend desconectado o no disponible ($e). Generando PDF normativo local.');
+      debugPrint('[SST-IA] POST a backend no disponible ($e). Intentando GET...');
     }
 
-    // 2. Generación local de alta fidelidad con la librería pdf de Dart (Fallback 100% offline)
+    // 1.1 Si falló el POST, intentar GET a la inspección activa
+    try {
+      final respGet = await http.get(Uri.parse(backendPdfUrl)).timeout(const Duration(seconds: 8));
+      if (respGet.statusCode == 200 && respGet.bodyBytes.isNotEmpty) {
+        return respGet.bodyBytes;
+      }
+    } catch (_) {}
+
+    // 2. Generación local de alta fidelidad con la librería pdf de Dart (Fallback 100% offline con fotos reales)
     return _generarLocal(i);
   }
 
   Future<Uint8List> _generarLocal(Inspeccion i) async {
     final doc = pw.Document();
     final lista = i.validados;
+
+    // Precargar todas las imágenes de forma asíncrona (compatible con Web, Android y PC)
+    final Map<String, Uint8List> fotosCargadas = {};
+    for (final h in lista) {
+      final key = '${h.elemento}_${h.fecha.millisecondsSinceEpoch}';
+
+      // Prioridad 1: Foto anotada en Base64
+      if (h.fotoAnotadaBase64 != null && h.fotoAnotadaBase64!.isNotEmpty) {
+        try {
+          final clean = h.fotoAnotadaBase64!.contains(',')
+              ? h.fotoAnotadaBase64!.split(',').last
+              : h.fotoAnotadaBase64!;
+          fotosCargadas[key] = base64Decode(clean);
+          continue;
+        } catch (_) {}
+      }
+
+      // Prioridad 2: Archivo XFile local o Web Blob
+      if (h.fotoPath != null && h.fotoPath!.isNotEmpty) {
+        try {
+          final bytes = await XFile(h.fotoPath!).readAsBytes();
+          if (bytes.isNotEmpty) {
+            fotosCargadas[key] = bytes;
+            continue;
+          }
+        } catch (_) {}
+      }
+    }
 
     pw.Widget fila(String k, String v) => pw.Padding(
           padding: const pw.EdgeInsets.only(bottom: 3),
@@ -72,34 +119,40 @@ class PdfService {
             ],
           ),
         ),
-        footer: (context) => pw.Container(
-          padding: const pw.EdgeInsets.only(top: 6),
-          margin: const pw.EdgeInsets.only(top: 12),
+        footer: (ctx) => pw.Container(
+          padding: const pw.EdgeInsets.only(top: 8),
           decoration: const pw.BoxDecoration(
-            border: pw.Border(top: pw.BorderSide(color: PdfColors.grey400, width: 0.8)),
+            border: pw.Border(top: pw.BorderSide(color: PdfColors.grey400, width: 0.5)),
           ),
           child: pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
-              pw.Text('Página ${context.pageNumber} de ${context.pagesCount} · Dictamen de Conformidad Legal SST',
+              pw.Text('Sistema SST-IA · Informe Pericial Automatizado con Detección IA',
                   style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700)),
-              pw.Text('Sistema SST-IA · ${fFecha(DateTime.now())}',
-                  style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700)),
+              pw.Text('Página ${ctx.pageNumber} de ${ctx.pagesCount}',
+                  style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold, color: PdfColors.blue900)),
             ],
           ),
         ),
         build: (_) => [
-          // Título del informe
-          pw.Text(
-            'Informe Pericial de Inspección Técnica de Seguridad y Salud en el Trabajo',
-            style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold, color: PdfColor.fromHex('#0B2A4A')),
+          // Título Principal
+          pw.Container(
+            padding: const pw.EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.blue900,
+              borderRadius: pw.BorderRadius.circular(6),
+            ),
+            child: pw.Center(
+              child: pw.Text(
+                'INFORME TÉCNICO PERICIAL DE INSPECCIÓN Y REGISTRO FOTOGRÁFICO SST',
+                textAlign: pw.TextAlign.center,
+                style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold, color: PdfColors.white),
+              ),
+            ),
           ),
-          pw.SizedBox(height: 3),
-          pw.Text('Evaluación de Señalización, Equipos de Emergencia y Condiciones Locativas',
-              style: const pw.TextStyle(fontSize: 11, color: PdfColors.grey800)),
-          pw.SizedBox(height: 10),
+          pw.SizedBox(height: 14),
 
-          // Metadatos de la auditoría
+          // Metadatos de la Inspección
           pw.Container(
             padding: const pw.EdgeInsets.all(10),
             decoration: pw.BoxDecoration(
@@ -112,11 +165,11 @@ class PdfService {
               children: [
                 pw.Row(children: [
                   pw.Expanded(child: fila('Expediente', i.codigo)),
-                  pw.Expanded(child: fila('Fecha de Recorrido', fFecha(i.fecha))),
+                  pw.Expanded(child: fila('Fecha', '${i.fecha.day}/${i.fecha.month}/${i.fecha.year}')),
                 ]),
                 pw.Row(children: [
-                  pw.Expanded(child: fila('Sede Auditada', i.sede)),
-                  pw.Expanded(child: fila('Edificio / Bloque', i.edificio)),
+                  pw.Expanded(child: fila('Sede', i.sede)),
+                  pw.Expanded(child: fila('Edificio', i.edificio)),
                 ]),
                 pw.Row(children: [
                   pw.Expanded(child: fila('Área Específica', i.area)),
@@ -156,8 +209,8 @@ class PdfService {
               child: pw.Row(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  // Fotografía o anotada
-                  _construirImagenPdf(h),
+                  // Fotografía real con aspecto preservado
+                  _construirImagenPdf(h, fotosCargadas),
                   pw.SizedBox(width: 12),
                   pw.Expanded(
                     child: pw.Column(
@@ -228,25 +281,36 @@ class PdfService {
     return doc.save();
   }
 
-  pw.Widget _construirImagenPdf(Hallazgo h) {
-    try {
-      if (h.fotoAnotadaBase64 != null && h.fotoAnotadaBase64!.isNotEmpty) {
-        final clean = h.fotoAnotadaBase64!.contains(',')
-            ? h.fotoAnotadaBase64!.split(',').last
-            : h.fotoAnotadaBase64!;
-        final bytes = base64Decode(clean);
-        return pw.Image(pw.MemoryImage(bytes), width: 120, height: 95, fit: pw.BoxFit.cover);
-      }
-      if (h.fotoPath != null && !kIsWeb && File(h.fotoPath!).existsSync()) {
-        return pw.Image(pw.MemoryImage(File(h.fotoPath!).readAsBytesSync()),
-            width: 120, height: 95, fit: pw.BoxFit.cover);
-      }
-    } catch (_) {}
+  pw.Widget _construirImagenPdf(Hallazgo h, Map<String, Uint8List> fotosCargadas) {
+    final key = '${h.elemento}_${h.fecha.millisecondsSinceEpoch}';
+    final bytes = fotosCargadas[key];
+    if (bytes != null && bytes.isNotEmpty) {
+      try {
+        return pw.ClipRRect(
+          horizontalRadius: 4,
+          verticalRadius: 4,
+          child: pw.Image(
+            pw.MemoryImage(bytes),
+            width: 120,
+            height: 95,
+            fit: pw.BoxFit.cover,
+          ),
+        );
+      } catch (_) {}
+    }
     return pw.Container(
       width: 120,
       height: 95,
-      color: PdfColors.grey300,
-      child: pw.Center(child: pw.Text('Evidencia SST', style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700))),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey300,
+        borderRadius: pw.BorderRadius.circular(4),
+      ),
+      child: pw.Center(
+        child: pw.Text(
+          'Evidencia SST',
+          style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700),
+        ),
+      ),
     );
   }
 }

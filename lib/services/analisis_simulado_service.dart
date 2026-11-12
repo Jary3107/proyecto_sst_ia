@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
 import '../models/evidencia.dart';
 import '../models/hallazgo.dart';
 import '../utils/catalogo_normas.dart';
@@ -9,6 +11,15 @@ class ServicioAnalisisSimulado implements AnalisisService {
   @override
   Future<Hallazgo> analizar(Evidencia e) async {
     await Future.delayed(const Duration(milliseconds: 1200));
+
+    // Cargar la imagen en Base64 para que siempre aparezca en el informe PDF
+    String? fotoB64;
+    if (e.fotoPath.isNotEmpty) {
+      try {
+        final bytes = await XFile(e.fotoPath).readAsBytes();
+        fotoB64 = base64Encode(bytes);
+      } catch (_) {}
+    }
 
     final texto = '${e.tipo} ${e.observacion} ${e.ubicacion} ${e.adicional}';
     final senal = CatalogoNormasSST.buscarPorTexto(texto);
@@ -23,6 +34,7 @@ class ServicioAnalisisSimulado implements AnalisisService {
         observacion: e.observacion,
         confianza: 0.94,
         fotoPath: e.fotoPath,
+        fotoAnotadaBase64: fotoB64,
         norma: senal.norma,
         colorSeguridad: senal.colorSeguridad,
         colorContraste: senal.colorContraste,
@@ -48,6 +60,7 @@ class ServicioAnalisisSimulado implements AnalisisService {
       observacion: e.observacion,
       confianza: 0.82,
       fotoPath: e.fotoPath,
+      fotoAnotadaBase64: fotoB64,
       norma: 'NTC 1461 / NTC-ISO 3864 / Res. 2400 de 1979',
       colorSeguridad: 'Según categoría',
       colorContraste: 'Blanco / Negro',

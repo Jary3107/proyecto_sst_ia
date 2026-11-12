@@ -9,7 +9,7 @@ Estructurado rigurosamente según los requerimientos periciales colombianos y AP
 import io
 import os
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from datetime import datetime
 from PIL import Image as PILImage
 
@@ -194,31 +194,69 @@ class PDFService:
             textColor=colors.HexColor('#0f172a')
         )
 
-    def _resolver_ruta_foto(self, foto_path: str, foto_url: str = "") -> str:
-        """Resuelve la ruta absoluta válida de la fotografía en el sistema local."""
-        # 1. Verificar si la ruta directa existe
-        if foto_path and os.path.exists(foto_path):
-            return foto_path
-        
-        # 2. Buscar por nombre de archivo en UPLOADS_DIR
-        if foto_path:
-            nombre = Path(foto_path).name
-            candidato = UPLOADS_DIR / nombre
-            if candidato.exists():
-                return str(candidato)
-                
-        # 3. Buscar por foto_url
-        if foto_url:
-            nombre_url = Path(foto_url).name
-            candidato_url = UPLOADS_DIR / nombre_url
-            if candidato_url.exists():
-                return str(candidato_url)
+    def _resolver_fuente_foto(self, ev: Dict[str, Any], h: Optional[Dict[str, Any]] = None) -> Any:
+        """
+        Resuelve la imagen de la evidencia desde cualquier origen disponible:
+        1. Archivo local en UPLOADS_DIR o ruta absoluta/relativa.
+        2. Cadena Base64 o Data URI (en evidencia o hallazgo anotado).
+        3. URL relativa de uploads.
+        """
+        import base64
+        # Prioridad 1: Foto anotada en base64 en el hallazgo
+        if h and h.get("foto_anotada_base64"):
+            val_h = h["foto_anotada_base64"]
+            if isinstance(val_h, str) and len(val_h) > 50:
+                return ("base64", val_h)
 
+        # Prioridad 2: Base64 directo en la evidencia
+        for campo_b64 in ["foto_base64", "fotoAnotadaBase64", "foto"]:
+            val = ev.get(campo_b64)
+            if val and isinstance(val, str) and (val.startswith("data:image") or len(val) > 200):
+                return ("base64", val)
+
+        # Prioridad 3: foto_path en evidencia o hallazgo
+        candidatos = [ev.get("foto_path"), ev.get("fotoPath")]
+        if h:
+            candidatos.extend([h.get("fotoPath"), h.get("foto_path")])
+
+        for candidato_path in candidatos:
+            if not candidato_path or not isinstance(candidato_path, str):
+                continue
+            if candidato_path.startswith("data:image") or len(candidato_path) > 300:
+                return ("base64", candidato_path)
+            # Ruta directa
+            if os.path.exists(candidato_path):
+                return ("path", candidato_path)
+            # Ruta relativa al BASE_DIR
+            c_base = BASE_DIR / candidato_path
+            if c_base.exists():
+                return ("path", str(c_base))
+            # Nombre de archivo en UPLOADS_DIR
+            nombre = Path(candidato_path).name
+            c_uploads = UPLOADS_DIR / nombre
+            if c_uploads.exists():
+                return ("path", str(c_uploads))
+
+        # Prioridad 4: foto_url en evidencia
+        foto_url = ev.get("foto_url")
+        if foto_url and isinstance(foto_url, str):
+            nombre_url = Path(foto_url).name
+            c_url = UPLOADS_DIR / nombre_url
+            if c_url.exists():
+                return ("path", str(c_url))
+
+        return None
+
+    def _resolver_ruta_foto(self, foto_path: str, foto_url: str = "") -> str:
+        """Alias de compatibilidad para resolver la ruta absoluta de una foto."""
+        fuente = self._resolver_fuente_foto({"foto_path": foto_path, "foto_url": foto_url})
+        if fuente and fuente[0] == "path":
+            return fuente[1]
         return ""
 
-    def _crear_flowable_imagen(self, ruta_img: str, max_w: float = 210, max_h: float = 145):
+    def _crear_flowable_imagen(self, fuente: Any, max_w: float = 210, max_h: float = 145):
         """Crea un objeto Image de ReportLab escalado proporcionalmente manteniendo el aspecto."""
-        if not ruta_img or not os.path.exists(ruta_img):
+        if not fuente:
             return Table(
                 [[Paragraph("<i>[Fotografía capturada y archivada digitalmente]</i>", self.estilo_celda_center)]],
                 colWidths=[max_w],
@@ -232,24 +270,65 @@ class PDFService:
                 ]
             )
 
-        try:
-            with PILImage.open(ruta_img) as im:
-                orig_w, orig_h = im.size
-                if orig_w <= 0 or orig_h <= 0:
-                    raise ValueError("Dimensiones inválidas")
-                ratio = min(max_w / orig_w, max_h / orig_h)
-                dest_w = orig_w * ratio
-                dest_h = orig_h * ratio
-                
-                rl_img = RLImage(ruta_img, width=dest_w, height=dest_h)
-                return Table([[rl_img]], colWidths=[max_w], style=[
+        # Compatibilidad si pasaron un string directo en lugar de tupla
+        if isinstance(fuente, str):
+            if fuente.startswith("data:image") or len(fuente) > 300:
+                fuente = ("base64", fuente)
+            elif os.path.exists(fuente):
+                fuente = ("path", fuente)
+            else:
+                fuente = None
+
+        if not fuente:
+            return Table(
+                [[Paragraph("<i>[Fotografía capturada y archivada digitalmente]</i>", self.estilo_celda_center)]],
+                colWidths=[max_w],
+                style=[
+                    ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f1f5f9')),
+                    ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#cbd5e1')),
                     ('ALIGN', (0,0), (-1,-1), 'CENTER'),
                     ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-                    ('LEFTPADDING', (0,0), (-1,-1), 0),
-                    ('RIGHTPADDING', (0,0), (-1,-1), 0),
-                    ('TOPPADDING', (0,0), (-1,-1), 0),
-                    ('BOTTOMPADDING', (0,0), (-1,-1), 0),
-                ])
+                    ('TOPPADDING', (0,0), (-1,-1), 35),
+                    ('BOTTOMPADDING', (0,0), (-1,-1), 35),
+                ]
+            )
+
+        tipo, dato = fuente
+        try:
+            import base64
+            if tipo == "path":
+                with PILImage.open(dato) as im:
+                    orig_w, orig_h = im.size
+                    if orig_w <= 0 or orig_h <= 0:
+                        raise ValueError("Dimensiones inválidas")
+                    ratio = min(max_w / orig_w, max_h / orig_h)
+                    dest_w = orig_w * ratio
+                    dest_h = orig_h * ratio
+                    rl_img = RLImage(dato, width=dest_w, height=dest_h)
+            elif tipo == "base64":
+                raw = dato.split(",", 1)[1] if "," in dato else dato
+                img_bytes = base64.b64decode(raw)
+                buf = io.BytesIO(img_bytes)
+                with PILImage.open(buf) as im:
+                    orig_w, orig_h = im.size
+                    if orig_w <= 0 or orig_h <= 0:
+                        raise ValueError("Dimensiones inválidas")
+                    ratio = min(max_w / orig_w, max_h / orig_h)
+                    dest_w = orig_w * ratio
+                    dest_h = orig_h * ratio
+                buf.seek(0)
+                rl_img = RLImage(buf, width=dest_w, height=dest_h)
+            else:
+                raise ValueError(f"Tipo desconocido: {tipo}")
+
+            return Table([[rl_img]], colWidths=[max_w], style=[
+                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('LEFTPADDING', (0,0), (-1,-1), 0),
+                ('RIGHTPADDING', (0,0), (-1,-1), 0),
+                ('TOPPADDING', (0,0), (-1,-1), 0),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+            ])
         except Exception:
             return Paragraph("<i>[Error al procesar formato de imagen]</i>", self.estilo_celda_center)
 
@@ -458,8 +537,9 @@ class PDFService:
                     forma_geom = "Normalizada"
                     altura_mont = "Cotas estándar NTC 1461"
 
-                # Flowable de la foto
-                flowable_img = self._crear_flowable_imagen(ruta_foto, max_w=200, max_h=140)
+                # Flowable de la foto con resolución avanzada (Archivos locales, Base64 y Data URIs)
+                fuente_foto = self._resolver_fuente_foto(ev, h if hallazgos_ev else None)
+                flowable_img = self._crear_flowable_imagen(fuente_foto, max_w=200, max_h=140)
 
                 # Ficha descriptiva a la derecha
                 cond_color = "#16a34a" if "conforme" in condicion_ev.lower() and "no" not in condicion_ev.lower() else "#dc2626"

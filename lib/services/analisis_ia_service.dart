@@ -100,7 +100,7 @@ class ServicioAnalisisIAService implements AnalisisService {
           observacion: e.observacion,
           confianza: confianza,
           fotoPath: e.fotoPath,
-          fotoAnotadaBase64: fotoAnotada,
+          fotoAnotadaBase64: (fotoAnotada != null && fotoAnotada.isNotEmpty) ? fotoAnotada : fotoB64,
           bbox: bbox,
           norma: norma,
           colorSeguridad: data['color_seguridad']?.toString() ?? (senalRef?.colorSeguridad ?? ''),
