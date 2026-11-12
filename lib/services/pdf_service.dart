@@ -31,16 +31,8 @@ class PdfService {
         return resp.bodyBytes;
       }
     } catch (e) {
-      debugPrint('[SST-IA] POST a backend no disponible ($e). Intentando GET...');
+      debugPrint('[SST-IA] POST a backend ReportLab no disponible ($e). Generando PDF local con datos de la inspección...');
     }
-
-    // 1.1 Si falló el POST, intentar GET a la inspección activa
-    try {
-      final respGet = await http.get(Uri.parse(backendPdfUrl)).timeout(const Duration(seconds: 8));
-      if (respGet.statusCode == 200 && respGet.bodyBytes.isNotEmpty) {
-        return respGet.bodyBytes;
-      }
-    } catch (_) {}
 
     // 2. Generación local de alta fidelidad con la librería pdf de Dart (Fallback 100% offline con fotos reales)
     return _generarLocal(i);

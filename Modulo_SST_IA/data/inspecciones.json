@@ -2,7 +2,7 @@
   {
     "id": "1eac4ca0-cb10-46ca-8fc8-8017a07a1d72",
     "numero": "#0004",
-    "fecha": "2026-10-26 12:48",
+    "fecha": "2026-11-12 17:08",
     "sede": "Politécnico Grancolombiano, Sede Medellín",
     "edificio": "Campus Principal",
     "area": "Pasillos de Laboratorios y Aulas Múltiples",
@@ -10,42 +10,83 @@
     "estado": "enCurso",
     "evidencias": [
       {
-        "id": "74e0826b-3de9-41ec-9c64-7e8de2f06f81",
-        "foto_path": "/static/uploads/C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_edfd5861e6.jpg",
-        "foto_url": "/static/uploads/evidencia_edfd5861e6.jpg",
+        "id": "851637f0-d816-48a7-9506-e2bbbf6c36b6",
+        "foto_path": "/static/uploads/evidencia_ea196267ca.jpg",
+        "foto_url": "/static/uploads/evidencia_ea196267ca.jpg",
         "observacion": "",
         "ubicacion": "",
         "tipo_esperado": "General",
-        "fecha": "2026-10-26 12:48:14",
+        "fecha": "2026-11-12 17:07:51",
         "hallazgos": [
           {
-            "id": "70c67305-7cca-4bcf-b02e-7b2780d3da8a",
-            "elemento": "Señal: Flecha Direccional de Ruta de Evacuación",
-            "categoria": "Verdes",
+            "id": "0f2a0595-301b-4b3a-9938-5c166f758056",
+            "elemento": "Señal: Prohibido Fumar y Encender Fuego",
+            "categoria": "Rojas",
             "condicion": "Conforme",
-            "confianza": 0.98,
+            "confianza": 0.96,
             "estado": "validado",
-            "recomendacion": "Disponer señales fotoluminiscentes Clase A cada 15 metros a lo largo de los pasillos a 1.70m de altura, orientadas inequívocamente hacia las salidas de emergencia conforme a la ISO 16069 y NSR-10.",
+            "recomendacion": "Fijar señales circulares reglamentarias de 20cm de diámetro a 1.70m de altura en todos los accesos del bloque, con la leyenda 'Espacio 100% Libre de Humo de Tabaco' conforme a la Ley 1335 de 2009 y NTC 1461.",
             "bbox": [
-              0.0,
-              118.6,
-              552.9,
-              435.1
+              58.5,
+              54.6,
+              955.5,
+              952.9
             ],
             "clase_detectada": null,
-            "fecha_registro": "2026-10-26 12:48:14",
+            "fecha_registro": "2026-11-12 17:07:51",
             "norma": "",
             "color_seguridad": "",
             "color_contraste": "",
             "forma_geometrica": "",
-            "cobertura_min_color": "Verde >= 50% de la superficie total",
+            "cobertura_min_color": "Rojo >= 35% de la superficie total de la señal",
             "tamano_recomendado": "",
             "altura_montaje": "",
             "checklist_sst": [
-              "1. Coherencia en la dirección de las flechas hacia la salida real más cercana (sin flechas contradictorias).",
-              "2. Interpretación de flechas según ISO 16069 (flecha arriba: seguir recto / subir; flecha diagonal: bajar rampa/escalera).",
-              "3. Separación entre señales no mayor a 15 metros en pasillos rectos y obligatoria en todo quiebre o cruce.",
-              "4. Sin interrupciones por cortinas, letreros publicitarios ni cuadros decorativos."
+              "1. Señal visible en todas las puertas de acceso institucional y áreas comunes.",
+              "2. Texto complementario legal obligatorio: 'Espacio 100% Libre de Humo de Tabaco - Ley 1335 de 2009'.",
+              "3. Ausencia total de ceniceros en áreas de oficinas, laboratorios y aulas.",
+              "4. Banda roja diagonal cubriendo con precisión el pictograma a 45° sin desprendimientos."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "4aece7eb-e677-4409-aad8-91ab62e72ec8",
+        "foto_path": "/static/uploads/evidencia_6805b8c67d.jpg",
+        "foto_url": "/static/uploads/evidencia_6805b8c67d.jpg",
+        "observacion": "",
+        "ubicacion": "",
+        "tipo_esperado": "General",
+        "fecha": "2026-11-12 17:08:59",
+        "hallazgos": [
+          {
+            "id": "843ba2bb-5f60-405a-8b43-99a1f15ae980",
+            "elemento": "Señal: Prohibido Ingerir Alimentos y Bebidas",
+            "categoria": "Rojas",
+            "condicion": "Conforme",
+            "confianza": 0.98,
+            "estado": "validado",
+            "recomendacion": "Colocar señales circulares de prohibido comer/beber de 20cm de diámetro en los accesos a salas de cómputo y laboratorios para prevenir fallas en equipos y contaminación cruzada según Res. 2400/79.",
+            "bbox": [
+              1.9,
+              8.3,
+              606.6,
+              606.6
+            ],
+            "clase_detectada": null,
+            "fecha_registro": "2026-11-12 17:08:59",
+            "norma": "",
+            "color_seguridad": "",
+            "color_contraste": "",
+            "forma_geometrica": "",
+            "cobertura_min_color": "Rojo >= 35% de la superficie",
+            "tamano_recomendado": "",
+            "altura_montaje": "",
+            "checklist_sst": [
+              "1. Señal fijada en pórticos de laboratorios de química, sistemas, talleres y áreas limpias.",
+              "2. Verificación de ausencia de envases de café, bebidas o restos de comida cerca de equipos electrónicos.",
+              "3. Prohibición estricta de consumo dentro de zonas con riesgo biológico o químico.",
+              "4. Cumplimiento de políticas de bioseguridad institucional."
             ]
           }
         ]

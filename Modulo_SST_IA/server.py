@@ -165,13 +165,15 @@ def registrar_evidencia_con_analisis(inspeccion_id: str, payload: RegistroEviden
         cobertura_min_color=analisis.get("cobertura_min_color", ""),
         tamano_recomendado=analisis.get("tamano_recomendado", ""),
         altura_montaje=analisis.get("altura_montaje", ""),
-        checklist_sst=analisis.get("checklist_sst")
+        checklist_sst=analisis.get("checklist_sst"),
+        foto_anotada_base64=analisis.get("foto_anotada_base64")
     )
 
     # Crear evidencia
     evidencia = Evidencia(
         foto_path=str(foto_path),
         foto_url=f"/static/uploads/{filename}",
+        foto_base64=payload.foto_base64,
         observacion=payload.observacion,
         ubicacion=payload.ubicacion,
         tipo_esperado=payload.tipo_esperado,

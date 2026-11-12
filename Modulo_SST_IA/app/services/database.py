@@ -76,6 +76,10 @@ class DatabaseService:
 
     def crear_inspeccion(self, sede: str, edificio: str, area: str, responsable: str) -> Dict[str, Any]:
         items = self._leer_todos()
+        # Finalizar cualquier inspección anterior que estuviese en curso
+        for item in items:
+            if item.get("estado") == "enCurso":
+                item["estado"] = "finalizada"
         numero = f"#{len(items) + 1:04d}"
         nueva = Inspeccion(
             numero=numero,
@@ -87,7 +91,7 @@ class DatabaseService:
             evidencias=[]
         )
         data = nueva.model_dump()
-        items.insert(0, data) # insertar al principio
+        items.insert(0, data) # insertar al principio como única activa
         self._escribir_todos(items)
         return data
 

@@ -26,11 +26,13 @@ class Hallazgo(BaseModel):
     tamano_recomendado: Optional[str] = ""
     altura_montaje: Optional[str] = ""
     checklist_sst: Optional[List[str]] = None
+    foto_anotada_base64: Optional[str] = None
 
 class Evidencia(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     foto_path: str
     foto_url: Optional[str] = None
+    foto_base64: Optional[str] = None
     observacion: str = ""
     ubicacion: str = ""
     tipo_esperado: Optional[str] = "General"

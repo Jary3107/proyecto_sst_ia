@@ -78,6 +78,7 @@ const dom = {
   btnEliminarEvidenciaModal: document.getElementById('btn-eliminar-evidencia-modal'),
   btnRechazarHallazgo: document.getElementById('btn-rechazar-hallazgo'),
   btnContinuarRevision: document.getElementById('btn-continuar-revision'),
+  btnAprobarDirectoModal: document.getElementById('btn-aprobar-directo-modal'),
   
   // Modal Edición / Validación Humana
   modalRevision: document.getElementById('modal-revision'),
@@ -448,6 +449,9 @@ function setupEventListeners() {
     dom.modalResultado.style.display = 'none';
     abrirModalRevision();
   });
+  if (dom.btnAprobarDirectoModal) {
+    dom.btnAprobarDirectoModal.addEventListener('click', () => guardarRevision('validado'));
+  }
 
   // Botones de validación humana
   dom.btnGuardarPendiente.addEventListener('click', () => guardarRevision('pendiente'));
@@ -607,6 +611,9 @@ async function ejecutarAnalisisEvidencia() {
     appState.analisisActual = data.analisis_completo;
     appState.evidenciaActualId = data.evidencia.id;
     appState.hallazgoActualId = data.hallazgo.id;
+
+    // Refrescar inmediatamente los datos para que la evidencia quede vinculada a la vista
+    await refrescarDatos();
 
     // Completar checkpoints visuales
     marcarPaso(4);
@@ -877,6 +884,9 @@ async function handleCrearNuevaInspeccion(e) {
     });
 
     if (!res.ok) throw new Error("No se pudo crear la inspección");
+
+    const nuevaInsp = await res.json();
+    appState.inspeccionActiva = nuevaInsp;
 
     dom.modalNuevaInsp.style.display = 'none';
     dom.formNuevaInsp.reset();

@@ -170,6 +170,9 @@ class _InicioState extends State<_Inicio> {
   void initState() {
     super.initState();
     _revisarBackend();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<AppState>().cargarDesdeBackend();
+    });
   }
 
   Future<void> _revisarBackend() async {

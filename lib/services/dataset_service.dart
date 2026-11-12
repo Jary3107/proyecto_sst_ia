@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import '../utils/constants.dart';
 
 class EstadoEntrenamiento {
   final bool enProgreso;
@@ -42,12 +43,7 @@ class EstadoServidorIA {
 }
 
 class DatasetIAService {
-  static String get baseUrl {
-    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.0.2.2:5000';
-    }
-    return 'http://127.0.0.1:5000';
-  }
+  static String get baseUrl => backendBaseUrl;
 
   /// Verifica la salud y el modelo cargado actualmente en Modulo_SST_IA
   Future<EstadoServidorIA> verificarSalud() async {

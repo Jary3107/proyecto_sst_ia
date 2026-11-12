@@ -24,7 +24,7 @@ class Inspeccion {
 
   String get codigo => '#${numero.toString().padLeft(4, '0')}';
   List<Hallazgo> get hallazgos => evidencias.expand((e) => e.hallazgos).toList();
-  List<Hallazgo> get validados => hallazgos.where((h) => h.estado == EstadoHallazgo.validado).toList();
+  List<Hallazgo> get validados => hallazgos.where((h) => h.estado != EstadoHallazgo.rechazado).toList();
 
   Map<String, dynamic> toMap() => {
         'numero': codigo,

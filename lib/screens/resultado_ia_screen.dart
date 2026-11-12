@@ -19,13 +19,35 @@ class ResultadoIAScreen extends StatefulWidget {
 class _ResultadoIAScreenState extends State<ResultadoIAScreen> {
   bool _mostrarAnotada = true;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<AppState>().guardarHallazgo(widget.evidencia, widget.hallazgo);
+      }
+    });
+  }
+
+  void _aprobarDirecto(BuildContext context) {
+    widget.hallazgo.estado = EstadoHallazgo.validado;
+    context.read<AppState>().guardarHallazgo(widget.evidencia, widget.hallazgo);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Hallazgo "${widget.hallazgo.elemento}" aprobado e incluido en el informe.'),
+        backgroundColor: C.verde,
+      ),
+    );
+    Navigator.popUntil(context, (r) => r.settings.name == 'inspeccion' || r.isFirst);
+  }
+
   void _rechazar(BuildContext context) {
     widget.hallazgo.estado = EstadoHallazgo.rechazado;
     context.read<AppState>().guardarHallazgo(widget.evidencia, widget.hallazgo);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Hallazgo rechazado. No se incluirá en el informe pericial.')),
     );
-    Navigator.popUntil(context, (r) => r.settings.name == 'inspeccion');
+    Navigator.popUntil(context, (r) => r.settings.name == 'inspeccion' || r.isFirst);
   }
 
   @override
@@ -71,6 +93,13 @@ class _ResultadoIAScreenState extends State<ResultadoIAScreen> {
         const SizedBox(height: 14),
         const AvisoPreliminar(),
         const SizedBox(height: 16),
+        AppButton(
+          'Aprobar y Guardar en Informe',
+          icon: Icons.check_circle_outline,
+          estilo: EstiloBoton.primario,
+          onPressed: () => _aprobarDirecto(context),
+        ),
+        const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
@@ -83,7 +112,9 @@ class _ResultadoIAScreenState extends State<ResultadoIAScreen> {
             const SizedBox(width: 12),
             Expanded(
               child: AppButton(
-                'Revisar y Validar',
+                'Editar Parámetros',
+                icon: Icons.edit_note,
+                estilo: EstiloBoton.contorno,
                 onPressed: () => ir(context, RevisarHallazgoScreen(widget.evidencia, h)),
               ),
             ),
@@ -207,6 +238,10 @@ class _ResultadoIAScreenState extends State<ResultadoIAScreen> {
         backgroundColor: Colors.white,
         foregroundColor: C.navy,
         elevation: 0.5,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.popUntil(context, (r) => r.settings.name == 'inspeccion' || r.isFirst),
+        ),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 14),

@@ -91,15 +91,8 @@ class _RevisarHallazgoScreenState extends State<RevisarHallazgoScreen> {
 
   void _accion(EstadoHallazgo estado) {
     if (!_form.currentState!.validate()) return;
-    final nuevo = _guardar(estado);
-    if (nuevo) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HallazgoGuardadoScreen()));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cambios guardados correctamente en la inspección.')),
-      );
-      Navigator.pop(context);
-    }
+    _guardar(estado);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HallazgoGuardadoScreen()));
   }
 
   @override
