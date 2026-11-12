@@ -231,8 +231,8 @@ class PDFService:
             c_base = BASE_DIR / candidato_path
             if c_base.exists():
                 return ("path", str(c_base))
-            # Nombre de archivo en UPLOADS_DIR
-            nombre = Path(candidato_path).name
+            # Nombre de archivo en UPLOADS_DIR (compatible con Windows y Linux/Render)
+            nombre = candidato_path.replace('\\', '/').split('/')[-1]
             c_uploads = UPLOADS_DIR / nombre
             if c_uploads.exists():
                 return ("path", str(c_uploads))
@@ -240,7 +240,7 @@ class PDFService:
         # Prioridad 4: foto_url en evidencia
         foto_url = ev.get("foto_url")
         if foto_url and isinstance(foto_url, str):
-            nombre_url = Path(foto_url).name
+            nombre_url = foto_url.replace('\\', '/').split('/')[-1]
             c_url = UPLOADS_DIR / nombre_url
             if c_url.exists():
                 return ("path", str(c_url))

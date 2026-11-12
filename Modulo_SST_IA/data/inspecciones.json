@@ -11,7 +11,7 @@
     "evidencias": [
       {
         "id": "74e0826b-3de9-41ec-9c64-7e8de2f06f81",
-        "foto_path": "C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_edfd5861e6.jpg",
+        "foto_path": "/static/uploads/C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_edfd5861e6.jpg",
         "foto_url": "/static/uploads/evidencia_edfd5861e6.jpg",
         "observacion": "",
         "ubicacion": "",
@@ -64,7 +64,7 @@
     "evidencias": [
       {
         "id": "7de21439-0b4f-4d1e-b099-fa8c8504fa17",
-        "foto_path": "C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_9d2e2d9df4.jpg",
+        "foto_path": "/static/uploads/C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_9d2e2d9df4.jpg",
         "foto_url": "/static/uploads/evidencia_9d2e2d9df4.jpg",
         "observacion": "",
         "ubicacion": "",
@@ -117,7 +117,7 @@
     "evidencias": [
       {
         "id": "6ba523b2-c9e5-4000-96bc-ce18dc0ccbe9",
-        "foto_path": "C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_94e943c6d9.jpg",
+        "foto_path": "/static/uploads/C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_94e943c6d9.jpg",
         "foto_url": "/static/uploads/evidencia_94e943c6d9.jpg",
         "observacion": "",
         "ubicacion": "",
@@ -145,7 +145,7 @@
       },
       {
         "id": "f1dfec6c-0833-4cc9-beb9-c83fa7158635",
-        "foto_path": "C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_57bdafe874.jpg",
+        "foto_path": "/static/uploads/C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_57bdafe874.jpg",
         "foto_url": "/static/uploads/evidencia_57bdafe874.jpg",
         "observacion": "",
         "ubicacion": "",
@@ -173,7 +173,7 @@
       },
       {
         "id": "f50d6fa9-cc9b-4f7d-8376-af022d89a846",
-        "foto_path": "C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_edb9e6df67.jpg",
+        "foto_path": "/static/uploads/C:\\Users\\USUARIO\\OneDrive\\Desktop\\yair_ia\\Modulo_SST_IA\\app\\static\\uploads\\evidencia_edb9e6df67.jpg",
         "foto_url": "/static/uploads/evidencia_edb9e6df67.jpg",
         "observacion": "",
         "ubicacion": "",
