@@ -30,7 +30,7 @@ ROBOFLOW_WORKFLOW_URL = "https://serverless.roboflow.com/yair-cordoba/workflows/
 ROBOFLOW_PROJECT_ID = "prohibido-celular"
 
 # Servidor
-HOST = "0.0.0.0"
-PORT = 5000
-DEBUG = True
+HOST = os.getenv("HOST", "0.0.0.0")
+PORT = int(os.getenv("PORT", 5000))
+DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
