@@ -1,0 +1,6 @@
+# Ignorar el backend de Python y carpetas pesadas para evitar que Vercel intente crear Serverless Lambdas
+Modulo_SST_IA/
+backend/
+android/
+test/
+*.pt
